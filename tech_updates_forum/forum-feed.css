@@ -1,0 +1,1048 @@
+/* =========================================================
+   BIRCHSTONE TECH FORUM
+   Activity Feed Treatment
+   ========================================================= */
+
+
+/* =========================================================
+   MARKER
+   ========================================================= */
+
+html.subsection-3597 #body_litPageSummary {
+    display: none !important;
+}
+
+
+/* =========================================================
+   HIDE COMPLETE NATIVE INTERACT ROW
+   Preserve it in the DOM so native Interact actions
+   still function.
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-native-row-hidden {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+
+    white-space: nowrap !important;
+
+    border: 0 !important;
+
+    opacity: 0 !important;
+
+    pointer-events: none !important;
+}
+
+
+/* Fallback if a native row wrapper cannot be found */
+
+html.subsection-3597
+#forums
+.tl-eventcard.bff-native-hidden {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+
+    white-space: nowrap !important;
+
+    border: 0 !important;
+
+    opacity: 0 !important;
+
+    pointer-events: none !important;
+}
+
+
+/* =========================================================
+   SELF-CONTAINED ACTIVITY ROW
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-thread {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        58px minmax(0, 1fr);
+
+    column-gap: 20px;
+
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0;
+
+    padding:
+        24px 20px;
+
+    box-sizing: border-box;
+
+    border-bottom:
+        1px solid #e7e9eb;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease;
+}
+
+html.subsection-3597
+#forums
+.bff-thread:hover {
+    background:
+        rgba(
+            0,
+            84,
+            119,
+            0.025
+        );
+}
+
+html.subsection-3597
+#forums
+.bff-thread:focus-visible {
+    outline:
+        2px solid
+        #00a9ce;
+
+    outline-offset: -2px;
+}
+
+
+/* =========================================================
+   AVATAR
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-avatar-wrap {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: center;
+}
+
+html.subsection-3597
+#forums
+.bff-avatar {
+    display: block;
+
+    width: 56px !important;
+    height: 56px !important;
+
+    min-width: 56px !important;
+    min-height: 56px !important;
+
+    border-radius: 50%;
+
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-main {
+    position: relative;
+
+    min-width: 0;
+
+    padding-left: 24px;
+}
+
+html.subsection-3597
+#forums
+.bff-main::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 3px;
+
+    border-radius: 999px;
+
+    background: #00a9ce;
+}
+
+
+/* =========================================================
+   CATEGORY + TIME
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-thread-top {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 9px;
+}
+
+html.subsection-3597
+#forums
+.bff-category {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 22px;
+
+    padding: 0 8px;
+
+    border-radius: 999px;
+
+    background: #edf7fa;
+
+    color: #006889;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+
+    text-transform: uppercase;
+}
+
+html.subsection-3597
+#forums
+.bff-time {
+    flex-shrink: 0;
+
+    color: #9a9da0;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-title {
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #34383c;
+
+    font-size: 18px !important;
+    font-weight: 650 !important;
+    line-height: 1.35 !important;
+}
+
+
+/* =========================================================
+   PREVIEW
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-preview {
+    max-width: 720px;
+
+    margin:
+        8px 0 17px !important;
+
+    color: #6f7378;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-footer {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    min-height: 30px;
+
+    color: #8b8f93;
+
+    font-size: 11px;
+}
+
+html.subsection-3597
+#forums
+.bff-author {
+    color: #5a5f63;
+
+    font-weight: 600;
+}
+
+html.subsection-3597
+#forums
+.bff-footer-right {
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-left: auto;
+}
+
+
+/* =========================================================
+   LIKE / SHARE BUTTONS
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-icon-button {
+    appearance: none;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    min-width: 32px;
+    height: 30px;
+
+    padding: 0 7px;
+
+    border: 0;
+    border-radius: 999px;
+
+    background: transparent;
+
+    color: #858b90;
+
+    font: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        transform 0.1s ease;
+}
+
+html.subsection-3597
+#forums
+.bff-icon-button:hover {
+    background: #f1f4f5;
+
+    color: #005477;
+}
+
+html.subsection-3597
+#forums
+.bff-icon-button:active {
+    transform: scale(0.95);
+}
+
+html.subsection-3597
+#forums
+.bff-icon-button:focus-visible {
+    outline:
+        2px solid
+        #00a9ce;
+
+    outline-offset: 1px;
+}
+
+
+/* =========================================================
+   INDEX ICONS
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-icon {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 16px;
+    height: 16px;
+}
+
+html.subsection-3597
+#forums
+.bff-icon svg {
+    display: block;
+
+    width: 16px;
+    height: 16px;
+}
+
+
+/* Heart */
+
+html.subsection-3597
+#forums
+.bff-like
+svg path {
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+html.subsection-3597
+#forums
+.bff-like.is-liked {
+    color: #d64b61;
+}
+
+html.subsection-3597
+#forums
+.bff-like.is-liked
+svg path {
+    fill: currentColor;
+}
+
+
+/* Like count */
+
+html.subsection-3597
+#forums
+.bff-like-count {
+    min-width: 8px;
+
+    color: inherit;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* Share */
+
+html.subsection-3597
+#forums
+.bff-share
+svg {
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   POSTS BADGE
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.bff-posts {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 28px;
+
+    padding: 0 10px;
+
+    border-radius: 999px;
+
+    background: #eef6f8;
+
+    color: #005477;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TOP FORUM CONTROLS
+   Preserve native behavior, just lightly polish them.
+   ========================================================= */
+
+html.subsection-3597
+#forums
+input[type="search"],
+html.subsection-3597
+#forums
+input[type="text"],
+html.subsection-3597
+#forums
+select {
+    border-radius: 6px !important;
+}
+
+html.subsection-3597
+#forums
+a[title="Start a Discussion"],
+html.subsection-3597
+#forums
+button[title="Start a Discussion"] {
+    border-radius: 6px !important;
+}
+
+
+/* =========================================================
+   REMOVE INTERACT'S NATIVE THREAD SECTION INSET
+   ========================================================= */
+
+html.subsection-3597
+#forums
+.thread-section.bff-thread-section {
+    padding-top: 0 !important;
+}
+
+
+/* =========================================================
+   TECH TEST FORUM THREAD PAGES
+   ========================================================= */
+
+
+/* =========================================================
+   REMOVE REPLY
+   ========================================================= */
+
+html.bff-tech-thread
+.bff-hide-reply {
+    display: none !important;
+}
+
+
+/* =========================================================
+   INDIVIDUAL POST ACTION ROW
+   ========================================================= */
+
+html.bff-tech-thread
+.bff-post-action-row {
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+}
+
+html.bff-tech-thread
+.bff-post-action-row
+> ul.tools {
+    display: flex !important;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+html.bff-tech-thread
+.bff-post-action-row
+> ul.tools
+> li {
+    float: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* =========================================================
+   POST SHARE
+   ========================================================= */
+
+html.bff-tech-thread
+.bff-post-share-item
+> .muted {
+    display: none !important;
+}
+
+html.bff-tech-thread
+.bff-thread-share {
+    display: inline-flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 28px;
+
+    padding: 0 !important;
+
+    border-radius: 999px;
+
+    color: #858b90 !important;
+
+    font-size: 0 !important;
+
+    text-decoration: none !important;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+html.bff-tech-thread
+.bff-thread-share:hover {
+    background: #f1f4f5;
+
+    color: #005477 !important;
+}
+
+
+/* =========================================================
+   POST LIKE
+   ========================================================= */
+
+html.bff-tech-thread
+.bff-thread-like {
+    display: inline-flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    min-width: 34px;
+    height: 28px;
+
+    padding: 0 6px !important;
+
+    border-radius: 999px;
+
+    color: #858b90 !important;
+
+    font-size: 0 !important;
+
+    text-decoration: none !important;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+html.bff-tech-thread
+.bff-thread-like:hover {
+    background: #f1f4f5;
+
+    color: #005477 !important;
+}
+
+
+/* Hide Interact's original Like label/count */
+
+html.bff-tech-thread
+.bff-thread-like
+> .muted {
+    display: none !important;
+}
+
+
+/* =========================================================
+   THREAD ACTION ICONS
+   ========================================================= */
+
+html.bff-tech-thread
+.bff-thread-action-icon {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 16px;
+    height: 16px;
+
+    font-size: initial;
+}
+
+html.bff-tech-thread
+.bff-thread-action-icon
+svg {
+    display: block;
+
+    width: 16px;
+    height: 16px;
+}
+
+
+/* Heart shape */
+
+html.bff-tech-thread
+.bff-thread-like
+.bff-thread-action-icon
+svg path,
+html.bff-tech-thread
+.bff-thread-header-like
+.bff-thread-action-icon
+svg path {
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* Liked state */
+
+html.bff-tech-thread
+.bff-thread-like.is-liked,
+html.bff-tech-thread
+.bff-thread-header-like.is-liked {
+    color: #d64b61 !important;
+}
+
+html.bff-tech-thread
+.bff-thread-like.is-liked
+.bff-thread-action-icon
+svg path,
+html.bff-tech-thread
+.bff-thread-header-like.is-liked
+.bff-thread-action-icon
+svg path {
+    fill: currentColor;
+}
+
+
+/* Share shape */
+
+html.bff-tech-thread
+.bff-thread-share
+.bff-thread-action-icon
+svg,
+html.bff-tech-thread
+.bff-thread-header-share
+.bff-thread-action-icon
+svg {
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   POST LIKE COUNT
+   ========================================================= */
+
+html.bff-tech-thread
+.bff-thread-like-count {
+    display: inline-block;
+
+    min-width: 7px;
+
+    color: inherit;
+
+    font-size: 11px !important;
+    font-weight: 600;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   POST TIMESTAMP
+   ========================================================= */
+
+html.bff-tech-thread
+.bff-post-action-row
+.timeago {
+    margin-left: 3px;
+
+    color: #8f9498 !important;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   THREAD-LEVEL SHARE / LIKE
+   ========================================================= */
+
+html.bff-tech-thread
+.bff-thread-header-action {
+    display: inline-flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 36px !important;
+    height: 36px !important;
+
+    min-width: 36px !important;
+
+    margin: 0 2px !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+    border-radius: 999px !important;
+
+    background: transparent !important;
+
+    color: #737a80 !important;
+
+    box-shadow: none !important;
+
+    text-decoration: none !important;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+html.bff-tech-thread
+.bff-thread-header-action:hover {
+    background: #f1f4f5 !important;
+
+    color: #005477 !important;
+}
+
+
+/* =========================================================
+   ACCESSIBILITY LABELS
+   ========================================================= */
+
+html.bff-tech-thread
+.bff-custom-action-label {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    padding: 0 !important;
+    margin: -1px !important;
+
+    overflow: hidden !important;
+
+    clip: rect(0, 0, 0, 0) !important;
+
+    white-space: nowrap !important;
+
+    border: 0 !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 720px) {
+
+    html.subsection-3597
+    #forums
+    .bff-thread {
+        grid-template-columns:
+            46px minmax(0, 1fr);
+
+        column-gap: 14px;
+
+        padding:
+            20px 10px;
+    }
+
+    html.subsection-3597
+    #forums
+    .bff-avatar {
+        width: 44px !important;
+        height: 44px !important;
+
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+
+    html.subsection-3597
+    #forums
+    .bff-main {
+        padding-left: 18px;
+    }
+
+    html.subsection-3597
+    #forums
+    .bff-thread-top {
+        align-items: flex-start;
+    }
+
+    html.subsection-3597
+    #forums
+    .bff-title {
+        font-size:
+            16px !important;
+    }
+
+    html.subsection-3597
+    #forums
+    .bff-footer {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    html.subsection-3597
+    #forums
+    .bff-footer-right {
+        width: 100%;
+
+        margin-left: 0;
+    }
+
+    html.subsection-3597
+    #forums
+    .bff-posts {
+        margin-left: auto;
+    }
+}
+
+/* =========================================================
+   TECH TEST FORUM THREAD PAGE AVATAR FIX
+   ========================================================= */
+
+html.bff-tech-thread
+.tl-person img,
+html.bff-tech-thread
+.tl-eventcard img,
+html.bff-tech-thread
+img.avatar,
+html.bff-tech-thread
+img.img-circle {
+    width: 56px !important;
+    height: 56px !important;
+
+    min-width: 56px !important;
+    min-height: 56px !important;
+
+    max-width: 56px !important;
+    max-height: 56px !important;
+
+    border-radius: 50% !important;
+
+    object-fit: cover !important;
+    object-position: center !important;
+
+    display: block !important;
+}
+
+/* =========================================================
+   RESTORE IMAGES EMBEDDED IN POST CONTENT
+   Do not treat uploaded images as avatars.
+   ========================================================= */
+
+html.bff-tech-thread
+.post-body img {
+    width: auto !important;
+    height: auto !important;
+
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    max-width: 100% !important;
+    max-height: none !important;
+
+    border-radius: 0 !important;
+
+    object-fit: initial !important;
+    object-position: initial !important;
+
+    display: inline-block !important;
+}
+
+/* =========================================================
+   REMOVE INTERACT HEADER BUTTON PSEUDO-ICONS
+   Keep only our custom SVG share + heart.
+   ========================================================= */
+
+html.bff-tech-thread
+#btnShare::before,
+html.bff-tech-thread
+#btnShare::after,
+html.bff-tech-thread
+#btnLike::before,
+html.bff-tech-thread
+#btnLike::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* =========================================================
+   CUSTOM THREAD HEADER ICON SIZE
+   ========================================================= */
+
+html.bff-tech-thread
+#btnShare
+.bff-custom-top-share-icon,
+html.bff-tech-thread
+#btnLike
+.bff-custom-top-like-icon {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+html.bff-tech-thread
+#btnShare
+.bff-custom-top-share-icon svg,
+html.bff-tech-thread
+#btnLike
+.bff-custom-top-like-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+}
