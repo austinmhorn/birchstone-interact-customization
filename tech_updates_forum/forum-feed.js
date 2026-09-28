@@ -4,6 +4,11 @@
     const MARKER = "[[TECH_TEST_FORUM]]";
     const FORUM_PAGE_ID = "3597";
 
+    const ALLOWED_COMMENTER_IDS = new Set([
+        "281",
+        "276"
+    ]);
+
 
     /* =========================================================
        PAGE DETECTION
@@ -106,6 +111,52 @@
         } catch (error) {
             return titleLink.href;
         }
+    }
+
+
+    function getCurrentInteractUserId() {
+        const candidates = [
+            window.loggedInUserId,
+            window.LoggedInUserID,
+            window.PersonID
+        ];
+
+        for (const candidate of candidates) {
+            if (
+                candidate !== undefined &&
+                candidate !== null &&
+                String(candidate).trim() !== ""
+            ) {
+                return String(candidate).trim();
+            }
+        }
+
+        return null;
+    }
+
+    function applyCommentPermissions() {
+        if (!isTargetForumThread()) {
+            return;
+        }
+
+        const currentUserId =
+            getCurrentInteractUserId();
+
+        const allowed =
+            currentUserId !== null &&
+            ALLOWED_COMMENTER_IDS.has(
+                currentUserId
+            );
+
+        document.documentElement.classList.toggle(
+            "bff-can-comment",
+            allowed
+        );
+
+        document.documentElement.classList.toggle(
+            "bff-cannot-comment",
+            !allowed
+        );
     }
 
 
@@ -1255,6 +1306,7 @@
 
         styleThreadHeaderActions();
         styleThreadPostActions();
+        applyCommentPermissions();
     }
 
 
