@@ -1046,3 +1046,19 @@ html.bff-tech-thread
     width: 18px !important;
     height: 18px !important;
 }
+
+/* =========================================================
+   COMMENT PERMISSIONS
+   Hide reply composer unless current viewer is allowlisted.
+   ========================================================= */
+
+html.bff-tech-thread
+#body_AddPostArea {
+    display: none !important;
+}
+
+html.bff-tech-thread.bff-can-comment
+#body_AddPostArea {
+    display: block !important;
+}
+
