@@ -5,7 +5,6 @@
     const FORUM_PAGE_ID = "3597";
 
     const ALLOWED_COMMENTER_IDS = new Set([
-        "281",
         "276"
     ]);
 
