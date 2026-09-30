@@ -156,6 +156,47 @@
             "bff-cannot-post",
             !allowed
         );
+
+        if (isTargetForumIndex()) {
+            const candidates =
+                document.querySelectorAll(
+                    "a, button, input[type='button'], input[type='submit']"
+                );
+
+            candidates.forEach(element => {
+                const label = [
+                    element.textContent,
+                    element.value,
+                    element.getAttribute("title"),
+                    element.getAttribute("aria-label")
+                ]
+                    .filter(Boolean)
+                    .join(" ")
+                    .replace(/\s+/g, " ")
+                    .trim()
+                    .toLowerCase();
+
+                if (
+                    label.includes(
+                        "start a discussion"
+                    )
+                ) {
+                    if (allowed) {
+                        element.hidden = false;
+                        element.style.removeProperty(
+                            "display"
+                        );
+                    } else {
+                        element.hidden = true;
+                        element.style.setProperty(
+                            "display",
+                            "none",
+                            "important"
+                        );
+                    }
+                }
+            });
+        }
     }
 
 
