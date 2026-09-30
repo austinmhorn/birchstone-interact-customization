@@ -115,6 +115,9 @@
 
     function getCurrentInteractUserId() {
         const candidates = [
+            document.getElementById(
+                "hidden-master-person-id"
+            )?.value,
             window.loggedInUserId,
             window.LoggedInUserID,
             window.PersonID
@@ -158,44 +161,27 @@
         );
 
         if (isTargetForumIndex()) {
-            const candidates =
-                document.querySelectorAll(
-                    "a, button, input[type='button'], input[type='submit']"
+            const startDiscussionButton =
+                document.getElementById(
+                    "body_lnkAsDiscussion"
                 );
 
-            candidates.forEach(element => {
-                const label = [
-                    element.textContent,
-                    element.value,
-                    element.getAttribute("title"),
-                    element.getAttribute("aria-label")
-                ]
-                    .filter(Boolean)
-                    .join(" ")
-                    .replace(/\s+/g, " ")
-                    .trim()
-                    .toLowerCase();
+            if (startDiscussionButton) {
+                startDiscussionButton.hidden =
+                    !allowed;
 
-                if (
-                    label.includes(
-                        "start a discussion"
-                    )
-                ) {
-                    if (allowed) {
-                        element.hidden = false;
-                        element.style.removeProperty(
-                            "display"
-                        );
-                    } else {
-                        element.hidden = true;
-                        element.style.setProperty(
-                            "display",
-                            "none",
-                            "important"
-                        );
-                    }
+                if (allowed) {
+                    startDiscussionButton.style.removeProperty(
+                        "display"
+                    );
+                } else {
+                    startDiscussionButton.style.setProperty(
+                        "display",
+                        "none",
+                        "important"
+                    );
                 }
-            });
+            }
         }
     }
 
