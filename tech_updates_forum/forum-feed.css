@@ -1065,23 +1065,15 @@ html.bff-tech-thread.bff-can-post
     display: block !important;
 }
 
-/* Hide "Start a Discussion" by default on the target forum. */
+/* Hide Interact's exact "Start a Discussion" control by default. */
 html.subsection-3597
-#forums
-a[title="Start a Discussion"],
-html.subsection-3597
-#forums
-button[title="Start a Discussion"] {
+#body_lnkAsDiscussion {
     display: none !important;
 }
 
-/* Reveal "Start a Discussion" for allowlisted users. */
+/* Reveal it only for allowlisted users. */
 html.subsection-3597.bff-can-post
-#forums
-a[title="Start a Discussion"],
-html.subsection-3597.bff-can-post
-#forums
-button[title="Start a Discussion"] {
-    display: inline-block !important;
+#body_lnkAsDiscussion {
+    display: inline-flex !important;
 }
 
