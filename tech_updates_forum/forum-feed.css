@@ -1048,17 +1048,40 @@ html.bff-tech-thread
 }
 
 /* =========================================================
-   COMMENT PERMISSIONS
-   Hide reply composer unless current viewer is allowlisted.
+   POSTING PERMISSIONS
+   One allowlist controls both starting discussions and
+   replying to existing discussions.
    ========================================================= */
 
+/* Hide the thread reply composer by default. */
 html.bff-tech-thread
 #body_AddPostArea {
     display: none !important;
 }
 
-html.bff-tech-thread.bff-can-comment
+/* Reveal the thread reply composer for allowlisted users. */
+html.bff-tech-thread.bff-can-post
 #body_AddPostArea {
     display: block !important;
+}
+
+/* Hide "Start a Discussion" by default on the target forum. */
+html.subsection-3597
+#forums
+a[title="Start a Discussion"],
+html.subsection-3597
+#forums
+button[title="Start a Discussion"] {
+    display: none !important;
+}
+
+/* Reveal "Start a Discussion" for allowlisted users. */
+html.subsection-3597.bff-can-post
+#forums
+a[title="Start a Discussion"],
+html.subsection-3597.bff-can-post
+#forums
+button[title="Start a Discussion"] {
+    display: inline-block !important;
 }
 
