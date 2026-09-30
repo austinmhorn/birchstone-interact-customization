@@ -4,7 +4,7 @@
     const MARKER = "[[TECH_TEST_FORUM]]";
     const FORUM_PAGE_ID = "3597";
 
-    const ALLOWED_COMMENTER_IDS = new Set([
+    const ALLOWED_POSTING_IDS = new Set([
         "276"
     ]);
 
@@ -133,8 +133,8 @@
         return null;
     }
 
-    function applyCommentPermissions() {
-        if (!isTargetForumThread()) {
+    function applyPostingPermissions() {
+        if (!isRelevantForumPage()) {
             return;
         }
 
@@ -143,17 +143,17 @@
 
         const allowed =
             currentUserId !== null &&
-            ALLOWED_COMMENTER_IDS.has(
+            ALLOWED_POSTING_IDS.has(
                 currentUserId
             );
 
         document.documentElement.classList.toggle(
-            "bff-can-comment",
+            "bff-can-post",
             allowed
         );
 
         document.documentElement.classList.toggle(
-            "bff-cannot-comment",
+            "bff-cannot-post",
             !allowed
         );
     }
@@ -1305,7 +1305,6 @@
 
         styleThreadHeaderActions();
         styleThreadPostActions();
-        applyCommentPermissions();
     }
 
 
@@ -1319,6 +1318,8 @@
         ) {
             return;
         }
+
+        applyPostingPermissions();
 
         if (
             isTargetForumIndex()
@@ -1340,6 +1341,8 @@
         const observer =
             new MutationObserver(
                 () => {
+
+                    applyPostingPermissions();
 
                     if (
                         isTargetForumIndex()
