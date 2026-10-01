@@ -5,7 +5,9 @@
     const FORUM_PAGE_ID = "3597";
 
     const ALLOWED_POSTING_IDS = new Set([
-        "276"
+        "276",
+        "279",
+        "282"
     ]);
 
 
