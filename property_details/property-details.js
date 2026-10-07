@@ -1,6 +1,60 @@
 (() => {
   const STORAGE_KEY = "birchstone-property-details-selection";
 
+
+  function closePageDetailsPane() {
+    const candidates = [
+      ...document.querySelectorAll(
+        '[title*="Hide page details" i], [aria-label*="Hide page details" i], button, a, [role="button"]'
+      ),
+    ];
+
+    const control = candidates.find((element) => {
+      const title = (element.getAttribute("title") || "").trim();
+      const aria = (element.getAttribute("aria-label") || "").trim();
+      const text = (element.textContent || "").trim();
+      const label = [title, aria, text].join(" ").toLowerCase();
+      return label.includes("hide page details");
+    });
+
+    if (control) {
+      control.click();
+      return true;
+    }
+
+    return false;
+  }
+
+  function expandPropertyDetails(app) {
+    const applyWidth = () => {
+      const rect = app.getBoundingClientRect();
+      const rightGutter = 32;
+      const available = Math.max(
+        rect.width,
+        window.innerWidth - rect.left - rightGutter
+      );
+      const target = Math.min(1180, available);
+      app.style.setProperty("--pd-runtime-width", target + "px");
+    };
+
+    applyWidth();
+
+    let attempts = 0;
+    const tryCloseDetails = () => {
+      attempts += 1;
+      if (closePageDetailsPane()) {
+        window.setTimeout(applyWidth, 350);
+        return;
+      }
+      if (attempts < 12) {
+        window.setTimeout(tryCloseDetails, 250);
+      }
+    };
+
+    tryCloseDetails();
+    window.addEventListener("resize", applyWidth);
+  }
+
   function initPropertyDetails(app) {
     if (app.dataset.propertyDetailsInitialized === "true") return;
     app.dataset.propertyDetailsInitialized = "true";
@@ -8,6 +62,8 @@
     const selector = app.querySelector("[data-property-selector]");
     const records = [...app.querySelectorAll("[data-property-record]")];
     if (!selector || records.length === 0) return;
+
+    expandPropertyDetails(app);
 
     const validKeys = new Set(records.map((record) => record.dataset.propertyRecord));
 
