@@ -3,30 +3,64 @@
 
 
   function closePageDetailsPane() {
-    const candidates = [
+    const directCandidates = [
       ...document.querySelectorAll(
-        '[title*="Hide page details" i], [aria-label*="Hide page details" i], button, a, [role="button"]'
+        '[title*="Hide page details" i], [aria-label*="Hide page details" i], [data-original-title*="Hide page details" i]'
       ),
     ];
 
-    const control = candidates.find((element) => {
-      const title = (element.getAttribute("title") || "").trim();
-      const aria = (element.getAttribute("aria-label") || "").trim();
-      const text = (element.textContent || "").trim();
-      const label = [title, aria, text].join(" ").toLowerCase();
-      return label.includes("hide page details");
-    });
-
-    if (control) {
-      control.click();
+    if (directCandidates.length) {
+      directCandidates[0].click();
       return true;
     }
 
-    return false;
+    const detailsHeading = [...document.querySelectorAll("body *")].find((element) => {
+      if (element.children.length) return false;
+      return (element.textContent || "").trim().toLowerCase() === "details";
+    });
+
+    if (!detailsHeading) return false;
+
+    const detailsRect = detailsHeading.getBoundingClientRect();
+    const candidates = [
+      ...document.querySelectorAll("button, a, [role='button']"),
+    ].filter((element) => {
+      const rect = element.getBoundingClientRect();
+      if (!rect.width || !rect.height) return false;
+      if (rect.top < 55 || rect.top > 190) return false;
+      if (rect.left < detailsRect.left) return false;
+      if (rect.width > 80 || rect.height > 80) return false;
+      return true;
+    });
+
+    if (!candidates.length) return false;
+
+    candidates.sort(
+      (a, b) => b.getBoundingClientRect().left - a.getBoundingClientRect().left
+    );
+
+    candidates[0].click();
+    return true;
   }
 
   function expandPropertyDetails(app) {
+    document.documentElement.classList.add("birchstone-property-details-page");
+
+    const relaxAncestorClipping = () => {
+      let node = app.parentElement;
+      let depth = 0;
+
+      while (node && node !== document.body && depth < 8) {
+        node.style.setProperty("overflow-x", "visible", "important");
+        node.style.setProperty("max-width", "none", "important");
+        node = node.parentElement;
+        depth += 1;
+      }
+    };
+
     const applyWidth = () => {
+      relaxAncestorClipping();
+
       const rect = app.getBoundingClientRect();
       const rightGutter = 32;
       const available = Math.max(
@@ -34,7 +68,9 @@
         window.innerWidth - rect.left - rightGutter
       );
       const target = Math.min(1180, available);
-      app.style.setProperty("--pd-runtime-width", target + "px");
+
+      app.style.setProperty("width", target + "px", "important");
+      app.style.setProperty("max-width", "none", "important");
     };
 
     applyWidth();
@@ -42,17 +78,22 @@
     let attempts = 0;
     const tryCloseDetails = () => {
       attempts += 1;
+
       if (closePageDetailsPane()) {
-        window.setTimeout(applyWidth, 350);
+        window.setTimeout(applyWidth, 450);
         return;
       }
-      if (attempts < 12) {
+
+      if (attempts < 20) {
         window.setTimeout(tryCloseDetails, 250);
       }
     };
 
     tryCloseDetails();
-    window.addEventListener("resize", applyWidth);
+
+    window.addEventListener("resize", () => {
+      window.requestAnimationFrame(applyWidth);
+    });
   }
 
   function initPropertyDetails(app) {
