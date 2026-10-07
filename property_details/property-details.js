@@ -50,9 +50,19 @@
       let node = app.parentElement;
       let depth = 0;
 
-      while (node && node !== document.body && depth < 8) {
+      while (node && node !== document.body && depth < 16) {
+        /*
+         * Interact's article stack includes a fixed-width ancestor with
+         * overflow:hidden. The property component intentionally extends
+         * beyond that article width after the details pane is closed, so
+         * every ancestor in the local page-content chain must allow that
+         * overflow to remain visible.
+         */
+        node.style.setProperty("overflow", "visible", "important");
         node.style.setProperty("overflow-x", "visible", "important");
+        node.style.setProperty("overflow-y", "visible", "important");
         node.style.setProperty("max-width", "none", "important");
+
         node = node.parentElement;
         depth += 1;
       }
