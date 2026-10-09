@@ -406,13 +406,10 @@
     const applyTableFilters = () => {
       if (!table || !search) return;
       const query = search.value.trim().toLocaleLowerCase();
-      const selectedStates = activeFilterValues("state");
-      const selectedManagers = activeFilterValues("manager");
       let count = 0;
       rows.forEach(row => {
         const matches = (!query || row.textContent.toLocaleLowerCase().includes(query)) &&
-          (!selectedStates.size || selectedStates.has(row.dataset.propertyTableState)) &&
-          (!selectedManagers.size || selectedManagers.has(row.dataset.propertyTableManager));
+          [...columnFilters].every(([index, values]) => values.has(cellValue(row, index)));
         row.hidden = !matches;
         if (matches) count++;
       });
@@ -461,10 +458,9 @@
       search?.addEventListener("input", applyTableFilters);
       app.querySelector("[data-property-table-reset]")?.addEventListener("click", () => {
         if (search) search.value = "";
-        Object.keys(filterMenus).forEach(name => {
-          filterMenus[name]?.querySelectorAll("input").forEach(input => { input.checked = false; });
-          updateFilterSummary(name);
-        });
+        columnFilters.clear();
+        refreshFilterIndicators();
+        closeColumnMenu();
         applyTableFilters();
       });
       app.querySelector("[data-property-table-export]")?.addEventListener("click", () => {
