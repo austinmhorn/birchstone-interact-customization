@@ -398,8 +398,9 @@
 }
 .property-portfolio-table th .property-column-menu-trigger:hover,
 .property-portfolio-table th .property-column-menu-trigger[aria-expanded="true"] { background: #d3e6e3; border-color: #9dbdb9; }
-.property-portfolio-table th .property-column-menu-trigger.is-filtered { color: #086e67; background: #d0e9e5; }
-.property-portfolio-table th .property-column-filter-indicator { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #087d71; right: 1px; top: 4px; }
+/* A single highlighted chevron indicates filtering; suppress the extra dot. */
+.property-portfolio-table th .property-column-menu-trigger.is-filtered { color: #086e67; background: #d0e9e5; border-color: #9dbdb9; }
+.property-portfolio-table th .property-column-filter-indicator { display: none !important; }
 .property-column-filter-menu[hidden] { display: none !important; }
 .property-column-filter-menu {
   position: fixed; z-index: 2147483000; padding: 14px;
