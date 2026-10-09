@@ -189,19 +189,6 @@
     const table = app.querySelector("[data-property-table]");
     const rows = table ? [...table.tBodies[0].rows] : [];
     const search = app.querySelector("[data-property-table-search]");
-    const filterMenus = {
-      state: app.querySelector('[data-property-filter-options="state"]'),
-      manager: app.querySelector('[data-property-filter-options="manager"]'),
-    };
-    const activeFilterValues = name => new Set(
-      [...(filterMenus[name]?.querySelectorAll("input:checked") || [])].map(input => input.value)
-    );
-    const updateFilterSummary = name => {
-      const summary = app.querySelector('[data-property-filter-summary="' + name + '"]');
-      if (!summary) return;
-      const selected = activeFilterValues(name);
-      summary.textContent = selected.size ? selected.size + " selected" : (name === "state" ? "All states" : "All managers");
-    };
     let activeView = "details";
     let sortIndex = -1;
     let sortDirection = 1;
@@ -255,24 +242,165 @@
       }
     };
 
-    const populateFilter = (name, attribute) => {
-      const menu = filterMenus[name];
-      if (!menu) return;
-      const values = [...new Set(rows.map(row => row.getAttribute(attribute) || "").filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+    // Each column has independent multi-value criteria; hidden columns retain criteria.
+    const columnFilters = new Map();
+    const cellValue = (row, index) => {
+      const cell = row.cells[index];
+      const value = cell?.textContent.trim() || "";
+      return value === "—" ? "" : value;
+    };
+    const filterLabel = value => value || "(Blanks)";
+    const headerButtons = [...table.querySelectorAll("[data-property-table-menu]")];
+    let activeMenu = null;
+    let activeTrigger = null;
+    const menu = document.createElement("div");
+    menu.className = "property-column-filter-menu";
+    menu.setAttribute("role", "dialog");
+    menu.setAttribute("aria-label", "Column sorting and filtering");
+    menu.hidden = true;
+    document.body.appendChild(menu);
+
+    const closeColumnMenu = (restoreFocus = false) => {
+      if (menu.hidden) return;
+      menu.hidden = true;
+      if (activeTrigger) {
+        activeTrigger.setAttribute("aria-expanded", "false");
+        if (restoreFocus) activeTrigger.focus();
+      }
+      activeMenu = null;
+      activeTrigger = null;
+    };
+
+    const refreshFilterIndicators = () => {
+      headerButtons.forEach(button => {
+        const index = Number(button.dataset.propertyTableMenu);
+        const active = columnFilters.has(index);
+        button.classList.toggle("is-filtered", active);
+        const indicator = button.querySelector(".property-column-filter-indicator");
+        if (indicator) indicator.hidden = !active;
+      });
+    };
+
+    const sortColumn = (index, direction) => {
+      sortIndex = index;
+      sortDirection = direction;
+      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+      rows.sort((a, b) => collator.compare(cellValue(a, index), cellValue(b, index)) * direction);
+      rows.forEach(row => table.tBodies[0].appendChild(row));
+      table.querySelectorAll("th[aria-sort]").forEach(th => th.removeAttribute("aria-sort"));
+      table.tHead.rows[0].cells[index].setAttribute("aria-sort", direction === 1 ? "ascending" : "descending");
+    };
+
+    const addMenuButton = (label, action, className = "") => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      if (className) button.className = className;
+      button.addEventListener("click", action);
+      return button;
+    };
+
+    const positionColumnMenu = () => {
+      if (!activeTrigger || menu.hidden) return;
+      const rect = activeTrigger.getBoundingClientRect();
+      const width = Math.min(290, window.innerWidth - 24);
+      const left = Math.max(12, Math.min(rect.left, window.innerWidth - width - 12));
+      const top = rect.bottom + 8;
+      menu.style.width = width + "px";
+      menu.style.left = left + "px";
+      menu.style.top = Math.min(top, window.innerHeight - 100) + "px";
+      menu.style.maxHeight = Math.max(180, window.innerHeight - Math.min(top, window.innerHeight - 100) - 12) + "px";
+    };
+
+    const openColumnMenu = trigger => {
+      const index = Number(trigger.dataset.propertyTableMenu);
+      if (activeTrigger === trigger && !menu.hidden) {
+        closeColumnMenu();
+        return;
+      }
+      closeColumnMenu();
+      activeMenu = index;
+      activeTrigger = trigger;
+      trigger.setAttribute("aria-expanded", "true");
+      menu.replaceChildren();
+      const title = document.createElement("strong");
+      title.textContent = table.tHead.rows[0].cells[index].querySelector(".property-table-heading")?.textContent || "Column";
+      menu.appendChild(title);
+      menu.appendChild(addMenuButton("↑  Sort ascending", () => {
+        sortColumn(index, 1);
+        closeColumnMenu(true);
+      }, "property-column-filter-menu__sort"));
+      menu.appendChild(addMenuButton("↓  Sort descending", () => {
+        sortColumn(index, -1);
+        closeColumnMenu(true);
+      }, "property-column-filter-menu__sort"));
+      const separator = document.createElement("hr");
+      menu.appendChild(separator);
+      const subtitle = document.createElement("span");
+      subtitle.className = "property-column-filter-menu__label";
+      subtitle.textContent = "Filter values";
+      menu.appendChild(subtitle);
+      const values = [...new Set(rows.map(row => cellValue(row, index)))];
+      values.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
+      const existing = columnFilters.get(index);
+      const selected = new Set(existing || values);
+      const searchValues = document.createElement("input");
+      searchValues.type = "search";
+      searchValues.placeholder = "Search values...";
+      searchValues.setAttribute("aria-label", "Search column values");
+      menu.appendChild(searchValues);
+      const valueList = document.createElement("div");
+      valueList.className = "property-column-filter-menu__values";
+      const boxes = new Map();
       values.forEach(value => {
         const label = document.createElement("label");
-        const input = document.createElement("input");
-        input.type = "checkbox";
-        input.value = value;
-        input.addEventListener("change", () => {
-          updateFilterSummary(name);
-          applyTableFilters();
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = selected.has(value);
+        checkbox.addEventListener("change", () => {
+          if (checkbox.checked) selected.add(value);
+          else selected.delete(value);
+          syncApply();
         });
-        label.append(input, document.createTextNode(value));
-        menu.appendChild(label);
+        boxes.set(value, checkbox);
+        label.append(checkbox, document.createTextNode(filterLabel(value)));
+        valueList.appendChild(label);
       });
-      updateFilterSummary(name);
+      menu.appendChild(valueList);
+      searchValues.addEventListener("input", () => {
+        const needle = searchValues.value.trim().toLocaleLowerCase();
+        [...valueList.children].forEach((label, i) => {
+          label.hidden = !filterLabel(values[i]).toLocaleLowerCase().includes(needle);
+        });
+      });
+      const actions = document.createElement("div");
+      actions.className = "property-column-filter-menu__actions";
+      actions.append(
+        addMenuButton("Select all", () => {
+          values.forEach(value => selected.add(value));
+          boxes.forEach(box => { box.checked = true; });
+          syncApply();
+        }),
+        addMenuButton("Clear", () => {
+          selected.clear();
+          boxes.forEach(box => { box.checked = false; });
+          syncApply();
+        })
+      );
+      menu.appendChild(actions);
+      const apply = addMenuButton("Apply filter", () => {
+        if (!selected.size) return;
+        if (selected.size === values.length) columnFilters.delete(index);
+        else columnFilters.set(index, new Set(selected));
+        refreshFilterIndicators();
+        applyTableFilters();
+        closeColumnMenu(true);
+      }, "property-column-filter-menu__apply");
+      const syncApply = () => { apply.disabled = selected.size === 0; };
+      syncApply();
+      menu.appendChild(apply);
+      menu.hidden = false;
+      positionColumnMenu();
     };
 
     const applyTableFilters = () => {
@@ -295,32 +423,26 @@
     };
 
     if (table && tableView && detailsView && viewButtons.length) {
-      // Treat the three native <details> menus as a coordinated dropdown group.
-      // A click outside closes them; Escape closes and restores focus.
-      const dropdowns = [...app.querySelectorAll(
-        "[data-property-filter], [data-property-column-chooser]"
-      )];
-      dropdowns.forEach(dropdown => {
-        dropdown.addEventListener("toggle", () => {
-          if (!dropdown.open) return;
-          dropdowns.forEach(other => {
-            if (other !== dropdown) other.open = false;
-          });
-        });
+      const columnChooser = app.querySelector("[data-property-column-chooser]");
+      columnChooser?.addEventListener("toggle", () => {
+        if (columnChooser.open) closeColumnMenu();
       });
       document.addEventListener("pointerdown", event => {
-        dropdowns.forEach(dropdown => {
-          if (dropdown.open && !dropdown.contains(event.target)) dropdown.open = false;
-        });
+        if (!menu.hidden && !menu.contains(event.target) &&
+            !activeTrigger?.contains(event.target)) closeColumnMenu();
+        if (columnChooser?.open && !columnChooser.contains(event.target)) columnChooser.open = false;
       });
-      app.addEventListener("keydown", event => {
+      document.addEventListener("keydown", event => {
         if (event.key !== "Escape") return;
-        const opened = dropdowns.filter(dropdown => dropdown.open);
-        if (!opened.length) return;
-        opened.forEach(dropdown => { dropdown.open = false; });
-        opened[opened.length - 1].querySelector("summary")?.focus();
-        event.preventDefault();
+        if (!menu.hidden) { closeColumnMenu(true); event.preventDefault(); }
+        else if (columnChooser?.open) { columnChooser.open = false; columnChooser.querySelector("summary")?.focus(); }
       });
+      window.addEventListener("resize", positionColumnMenu);
+      window.addEventListener("scroll", () => { if (!menu.hidden) closeColumnMenu(); }, true);
+      headerButtons.forEach(button => button.addEventListener("click", () => {
+        if (columnChooser) columnChooser.open = false;
+        openColumnMenu(button);
+      }));
       applyColumns(parsedColumns);
       columns.forEach(item => item.addEventListener("change", () => {
         const enabled = applyColumns(columns.filter(input => input.checked).map(input => input.dataset.propertyColumnKey));
@@ -350,7 +472,7 @@
           .map(input => Number(input.dataset.propertyColumnCheckbox));
         const quote = value => '"' + String(value ?? "").replace(/"/g, '""') + '"';
         const lines = [
-          indexes.map(index => quote(table.tHead.rows[0].cells[index].querySelector("button")?.childNodes[0]?.textContent.trim() || "")).join(","),
+          indexes.map(index => quote(table.tHead.rows[0].cells[index].querySelector(".property-table-heading")?.textContent.trim() || "")).join(","),
           ...rows.filter(row => !row.hidden).map(row => indexes.map(index => {
             const cell = row.cells[index];
             const link = cell.querySelector('a[href^="http"]');
@@ -376,18 +498,6 @@
         button.addEventListener("click", () => {
           showProperty(button.dataset.propertyTableOpen);
           switchView("details");
-        });
-      });
-      table.querySelectorAll("[data-property-table-sort]").forEach(button => {
-        button.addEventListener("click", () => {
-          const index = Number(button.dataset.propertyTableSort);
-          if (sortIndex === index) sortDirection *= -1;
-          else { sortIndex = index; sortDirection = 1; }
-          const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
-          rows.sort((a, b) => collator.compare(a.cells[index].textContent.trim(), b.cells[index].textContent.trim()) * sortDirection);
-          rows.forEach(row => table.tBodies[0].appendChild(row));
-          table.querySelectorAll("th[aria-sort]").forEach(item => item.removeAttribute("aria-sort"));
-          button.closest("th").setAttribute("aria-sort", sortDirection === 1 ? "ascending" : "descending");
         });
       });
       applyTableFilters();
