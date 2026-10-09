@@ -342,3 +342,46 @@
 .property-column-chooser__actions button{margin-top:0;min-width:0}
 .property-table-multiselect>summary:focus-visible{outline:3px solid #72a9a4;outline-offset:2px}
 @media(max-width:640px){.property-table-multiselect{flex:1 1 43%}.property-table-multiselect__menu{width:min(290px,80vw)}}
+
+
+/* v2.0.2: aligned toolbar controls */
+.property-table-controls { align-items: end; }
+.property-table-controls > label,
+.property-table-controls > .property-table-multiselect,
+.property-table-controls > .property-column-chooser,
+.property-table-controls > button { min-width: 0; }
+.property-table-controls > label { align-self: end; }
+.property-table-controls > label input,
+.property-table-controls > .property-table-multiselect > summary,
+.property-table-controls > .property-column-chooser > summary,
+.property-table-controls > button {
+  height: 52px;
+  min-height: 52px;
+  border: 1px solid var(--pd-border-strong);
+  border-radius: 11px;
+  background: var(--pd-surface);
+  color: var(--pd-text);
+  font-size: .87rem;
+  box-sizing: border-box;
+}
+.property-table-controls > label input { padding: 0 12px; }
+.property-table-controls > .property-table-multiselect > summary { padding: 6px 13px; }
+.property-table-controls > .property-table-multiselect > summary::after { top: 20px; }
+.property-table-controls > .property-column-chooser > summary {
+  padding: 0 15px;
+  justify-content: center;
+  font-weight: 800;
+}
+.property-table-controls > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
+  white-space: nowrap;
+  font-weight: 750;
+  cursor: pointer;
+}
+.property-table-controls > button:hover,
+.property-table-controls > .property-column-chooser > summary:hover,
+.property-table-controls > .property-table-multiselect > summary:hover { background: var(--pd-surface-soft); }
+.property-table-controls > [data-property-table-count] { align-self: center; }

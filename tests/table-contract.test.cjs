@@ -28,3 +28,10 @@ for (const token of ["data-property-filter-options", "selectedStates", "selected
   assert.ok(js.includes(token), "Phase 4 interaction missing: " + token);
 }
 assert.ok(css.includes(".property-table-multiselect"), "Multi-select filter styling missing");
+
+for (const marker of ['document.addEventListener("pointerdown"', 'dropdown.contains(event.target)', 'event.key !== "Escape"', 'dropdown.open = false', 'other.open = false']) {
+  assert.ok(js.includes(marker), "Dropdown dismissal behavior missing: " + marker);
+}
+for (const marker of [".property-table-controls > button", "height: 52px", ".property-table-controls > .property-column-chooser > summary"]) {
+  assert.ok(css.includes(marker), "Toolbar size contract missing: " + marker);
+}
