@@ -35,3 +35,12 @@ for (const retired of ['populateFilter(', 'activeFilterValues(', 'filterMenus[',
 
 assert.ok(css.includes(".property-column-filter-indicator { display: none !important; }"), "Extra filter dot must stay hidden");
 assert.ok(css.includes(".property-column-menu-trigger.is-filtered"), "Filtered chevron styling missing");
+
+for (const token of [
+  '.property-details-app .property-column-chooser__menu label > input[type="checkbox"]',
+  '-webkit-appearance: none !important',
+  'flex: 0 0 18px !important',
+  'height: 18px !important',
+  'border-radius: 4px !important',
+  'input[type="checkbox"]:checked::before'
+]) assert.ok(css.includes(token), "Interact checkbox styling regression: " + token);
