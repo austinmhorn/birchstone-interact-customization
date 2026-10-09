@@ -1,5 +1,7 @@
 (() => {
   const STORAGE_KEY = "birchstone-property-details-selection";
+  const VIEW_STORAGE_KEY = "birchstone-property-details-view-v1";
+  const COLUMNS_STORAGE_KEY = "birchstone-property-table-columns-v1";
 
 
   function closePageDetailsPane() {
@@ -192,6 +194,37 @@
     let activeView = "details";
     let sortIndex = -1;
     let sortDirection = 1;
+    const safeRead = key => {
+      try { return localStorage.getItem(key); } catch (_) { return null; }
+    };
+    const safeWrite = (key, value) => {
+      try { localStorage.setItem(key, value); } catch (_) {}
+    };
+    const columns = [...app.querySelectorAll("[data-property-column-checkbox]")];
+    const applyColumns = (saved = null) => {
+      if (!table || !columns.length) return [];
+      const permitted = new Set(columns.map(item => item.dataset.propertyColumnKey));
+      const selected = Array.isArray(saved)
+        ? new Set(saved.filter(key => permitted.has(key)))
+        : new Set(columns.filter(item => item.defaultChecked).map(item => item.dataset.propertyColumnKey));
+      selected.add("Property Name");
+      columns.forEach(item => {
+        const enabled = selected.has(item.dataset.propertyColumnKey);
+        item.checked = enabled;
+        const index = Number(item.dataset.propertyColumnCheckbox);
+        if (table.tHead.rows[0].cells[index]) table.tHead.rows[0].cells[index].hidden = !enabled;
+        rows.forEach(row => { if (row.cells[index]) row.cells[index].hidden = !enabled; });
+      });
+      return [...selected];
+    };
+    let parsedColumns = null;
+    const savedColumns = safeRead(COLUMNS_STORAGE_KEY);
+    if (savedColumns) {
+      try {
+        const parsed = JSON.parse(savedColumns);
+        if (Array.isArray(parsed)) parsedColumns = parsed.filter(item => typeof item === "string");
+      } catch (_) {}
+    }
 
     const switchView = (next, options = {}) => {
       if (!tableView || !detailsView || !table || !viewButtons.length) return;
@@ -199,6 +232,7 @@
       tableView.hidden = activeView !== "table";
       detailsView.hidden = activeView !== "details";
       app.dataset.propertyView = activeView;
+      if (options.remember !== false) safeWrite(VIEW_STORAGE_KEY, activeView);
       viewButtons.forEach(button => {
         const selected = button.dataset.propertyViewButton === activeView;
         button.setAttribute("aria-pressed", String(selected));
@@ -242,6 +276,15 @@
     };
 
     if (table && tableView && detailsView && viewButtons.length) {
+      applyColumns(parsedColumns);
+      columns.forEach(item => item.addEventListener("change", () => {
+        const enabled = applyColumns(columns.filter(input => input.checked).map(input => input.dataset.propertyColumnKey));
+        safeWrite(COLUMNS_STORAGE_KEY, JSON.stringify(enabled));
+      }));
+      app.querySelector("[data-property-columns-reset]")?.addEventListener("click", () => {
+        const defaults = applyColumns();
+        safeWrite(COLUMNS_STORAGE_KEY, JSON.stringify(defaults));
+      });
       populateFilter(state, "data-property-table-state");
       populateFilter(market, "data-property-table-market");
       [search, state, market].forEach(control => control?.addEventListener("input", applyTableFilters));
@@ -274,7 +317,11 @@
       });
       applyTableFilters();
       const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-      switchView(params.get("view") === "table" ? "table" : "details", { updateHash: false });
+      const requestedView = params.get("view");
+      const initialView = requestedView === "table" || requestedView === "details"
+        ? requestedView
+        : safeRead(VIEW_STORAGE_KEY) === "table" ? "table" : "details";
+      switchView(initialView, { updateHash: false, remember: false });
     }
 
     window.addEventListener("hashchange", () => {
