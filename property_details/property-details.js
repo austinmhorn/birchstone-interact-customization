@@ -295,6 +295,32 @@
     };
 
     if (table && tableView && detailsView && viewButtons.length) {
+      // Treat the three native <details> menus as a coordinated dropdown group.
+      // A click outside closes them; Escape closes and restores focus.
+      const dropdowns = [...app.querySelectorAll(
+        "[data-property-filter], [data-property-column-chooser]"
+      )];
+      dropdowns.forEach(dropdown => {
+        dropdown.addEventListener("toggle", () => {
+          if (!dropdown.open) return;
+          dropdowns.forEach(other => {
+            if (other !== dropdown) other.open = false;
+          });
+        });
+      });
+      document.addEventListener("pointerdown", event => {
+        dropdowns.forEach(dropdown => {
+          if (dropdown.open && !dropdown.contains(event.target)) dropdown.open = false;
+        });
+      });
+      app.addEventListener("keydown", event => {
+        if (event.key !== "Escape") return;
+        const opened = dropdowns.filter(dropdown => dropdown.open);
+        if (!opened.length) return;
+        opened.forEach(dropdown => { dropdown.open = false; });
+        opened[opened.length - 1].querySelector("summary")?.focus();
+        event.preventDefault();
+      });
       applyColumns(parsedColumns);
       columns.forEach(item => item.addEventListener("change", () => {
         const enabled = applyColumns(columns.filter(input => input.checked).map(input => input.dataset.propertyColumnKey));
