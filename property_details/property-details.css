@@ -318,3 +318,12 @@
 .property-column-chooser__menu label:has(input:disabled) { opacity: .7; cursor: default; }
 .property-column-chooser__menu button { width: 100%; min-height: 38px; margin-top: 12px; border: 1px solid var(--pd-border-strong); border-radius: 9px; background: var(--pd-surface-soft); color: var(--pd-accent-strong); font: inherit; font-weight: 750; cursor: pointer; }
 .property-column-chooser :focus-visible { outline: 3px solid #72a9a4; outline-offset: 2px; }
+
+
+/* Prevent dropdown clipping by the table shell; only the table body scrolls. */
+.property-table-view { overflow: visible; }
+.property-details-app[data-property-view="table"] .property-details-selector-wrap { display: none; }
+.property-details-app[data-property-view="table"] .property-details-toolbar { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 640px) {
+  .property-column-chooser__menu { right: auto; left: 0; }
+}
