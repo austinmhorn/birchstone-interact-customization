@@ -1,0 +1,23 @@
+name: Interact Details regression
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feature/property-portfolio-table-view
+
+permissions:
+  contents: read
+
+jobs:
+  details-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check current Details JS/CSS contracts
+        run: node tests/details-contract.test.cjs
+      - name: Check JavaScript syntax
+        run: node --check property_details/property-details.js
