@@ -303,3 +303,18 @@
 .property-table-view [data-property-table-empty]{padding:20px}
 .property-view-switch button:focus-visible,.property-table-view button:focus-visible{outline:3px solid #72a9a4;outline-offset:2px}
 @media(max-width:640px){.property-view-switch{width:100%}.property-view-switch button{flex:1}.property-table-controls{padding:14px}}
+
+
+/* Phase 3: compact keyboard-friendly column chooser */
+.property-column-chooser { position: relative; flex: 0 0 auto; }
+.property-column-chooser > summary { list-style: none; display: flex; align-items: center; min-height: 42px; padding: 8px 15px; border: 1px solid var(--pd-border-strong); border-radius: 10px; background: var(--pd-surface-soft); color: var(--pd-text); font-size: .86rem; font-weight: 800; cursor: pointer; }
+.property-column-chooser > summary::-webkit-details-marker { display: none; }
+.property-column-chooser > summary::after { content: " ▾"; margin-left: 9px; }
+.property-column-chooser[open] > summary::after { content: " ▴"; }
+.property-column-chooser__menu { position: absolute; z-index: 40; top: calc(100% + 7px); right: 0; width: min(290px, 85vw); max-height: 380px; overflow: auto; padding: 14px; border: 1px solid var(--pd-border-strong); border-radius: 13px; background: var(--pd-surface); box-shadow: 0 15px 32px rgba(24, 42, 48, .17); }
+.property-column-chooser__menu > strong { display: block; margin-bottom: 10px; font-size: .82rem; }
+.property-column-chooser__menu label { display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 3px 2px; font-size: .86rem; font-weight: 600; cursor: pointer; }
+.property-column-chooser__menu input { width: 16px; height: 16px; margin: 0; accent-color: var(--pd-accent); }
+.property-column-chooser__menu label:has(input:disabled) { opacity: .7; cursor: default; }
+.property-column-chooser__menu button { width: 100%; min-height: 38px; margin-top: 12px; border: 1px solid var(--pd-border-strong); border-radius: 9px; background: var(--pd-surface-soft); color: var(--pd-accent-strong); font: inherit; font-weight: 750; cursor: pointer; }
+.property-column-chooser :focus-visible { outline: 3px solid #72a9a4; outline-offset: 2px; }
