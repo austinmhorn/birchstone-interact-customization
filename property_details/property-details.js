@@ -455,8 +455,6 @@
         const defaults = applyColumns();
         safeWrite(COLUMNS_STORAGE_KEY, JSON.stringify(defaults));
       });
-      populateFilter("state", "data-property-table-state");
-      populateFilter("manager", "data-property-table-manager");
       search?.addEventListener("input", applyTableFilters);
       app.querySelector("[data-property-table-reset]")?.addEventListener("click", () => {
         if (search) search.value = "";

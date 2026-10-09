@@ -28,3 +28,7 @@ assert.ok(js.includes("const headerButtons = table ?"), "Legacy Details-only tab
 assert.ok(js.includes("COLUMNS_STORAGE_KEY") && js.includes("VIEW_STORAGE_KEY"), "Preference preservation missing");
 assert.ok(!js.includes("activeFilterValues("), "Legacy toolbar filter logic remains");
 console.log("v2.1.0 column header menu source contracts intact.");
+
+for (const retired of ['populateFilter(', 'activeFilterValues(', 'filterMenus[', 'data-property-table-sort']) {
+  assert.ok(!js.includes(retired), "Old filter initialization remains: " + retired);
+}
