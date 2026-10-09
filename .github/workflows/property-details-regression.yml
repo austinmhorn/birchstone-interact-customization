@@ -19,5 +19,7 @@ jobs:
           node-version: '22'
       - name: Check current Details JS/CSS contracts
         run: node tests/details-contract.test.cjs
+      - name: Check Table View contract
+        run: node tests/table-contract.test.cjs
       - name: Check JavaScript syntax
         run: node --check property_details/property-details.js
