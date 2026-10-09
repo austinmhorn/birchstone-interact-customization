@@ -435,3 +435,55 @@
 }
 .property-column-filter-menu__apply { display: block; width: 100%; min-height: 39px; border: 0; border-radius: 9px; background: #1f5f5b; color: #fff; font-weight: 800 !important; }
 .property-column-filter-menu__apply:disabled { opacity: .5; cursor: not-allowed; }
+
+
+/* v2.1.3: reset Interact's site-wide checkbox skin in the Columns menu only. */
+.property-details-app .property-column-chooser__menu label > input[type="checkbox"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  display: inline-grid !important;
+  place-content: center !important;
+  position: static !important;
+  box-sizing: border-box !important;
+  flex: 0 0 18px !important;
+  width: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 1.5px solid #a6b4bd !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+  vertical-align: middle !important;
+  cursor: pointer;
+}
+.property-details-app .property-column-chooser__menu label > input[type="checkbox"]::before {
+  content: "" !important;
+  display: block !important;
+  width: 9px;
+  height: 5px;
+  border: solid white;
+  border-width: 0 0 2px 2px;
+  transform: translateY(-1px) rotate(-45deg) scale(0);
+}
+.property-details-app .property-column-chooser__menu label > input[type="checkbox"]:checked {
+  border-color: #1f5f5b !important;
+  background: #1f5f5b !important;
+}
+.property-details-app .property-column-chooser__menu label > input[type="checkbox"]:checked::before {
+  transform: translateY(-1px) rotate(-45deg) scale(1);
+}
+.property-details-app .property-column-chooser__menu label > input[type="checkbox"]:focus-visible {
+  outline: 3px solid #72a9a4 !important;
+  outline-offset: 2px;
+}
+.property-details-app .property-column-chooser__menu label > input[type="checkbox"]:disabled {
+  opacity: .65 !important;
+  cursor: default;
+}
