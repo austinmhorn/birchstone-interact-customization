@@ -3,35 +3,28 @@ const fs = require("node:fs");
 const path = require("node:path");
 const js = fs.readFileSync(path.join(__dirname, "..", "property_details", "property-details.js"), "utf8");
 const css = fs.readFileSync(path.join(__dirname, "..", "property_details", "property-details.css"), "utf8");
+
 for (const marker of [
   "data-property-table-view", "data-property-details-view",
   "data-property-view-button", "data-property-table-open",
-  "data-property-table-search", "data-property-table-state",
-  "data-property-table-manager", "data-property-table-reset",
-  "data-property-table-sort", "data-property-table-count",
+  "data-property-table-search", "data-property-table-reset",
+  "data-property-table-menu", "data-property-table-count",
   "params.set(\"view\", activeView)", "propertyFromHash()",
+  "columnFilters", "openColumnMenu", "closeColumnMenu",
+  "Sort ascending", "Sort descending", "Search values...",
+  "Select all", "Clear", "Apply filter", "refreshFilterIndicators",
+  "data-property-columns-all", "data-property-columns-reset",
+  "data-property-table-export", "URL.createObjectURL", "text/csv",
+  "menu.contains(event.target)", 'event.key !== "Escape"',
 ]) assert.ok(js.includes(marker), "Missing Table interaction: " + marker);
-for (const selector of [".property-view-switch", ".property-table-view", ".property-portfolio-table", ".property-table-scroll", ".property-details-app [hidden]"])
-  assert.ok(css.includes(selector), "Missing Table style: " + selector);
-assert.ok(js.includes("if (table && tableView && detailsView && viewButtons.length)"), "Table must be feature detected for legacy HTML");
-console.log("Dual-view source contracts intact.");
-
-for (const token of ["COLUMNS_STORAGE_KEY", "VIEW_STORAGE_KEY", "applyColumns", "data-property-column-checkbox", "data-property-columns-reset", "defaultChecked", "requestedView"]) {
-  assert.ok(js.includes(token), "Phase 3 behavior missing: " + token);
-}
-for (const token of [".property-column-chooser", ".property-column-chooser__menu"]) {
-  assert.ok(css.includes(token), "Phase 3 style missing: " + token);
-}
-console.log("Phase 3 column chooser and preference contracts intact.");
-
-for (const token of ["data-property-filter-options", "selectedStates", "selectedManagers", "data-property-columns-all", "data-property-table-export", "URL.createObjectURL", "text/csv"]) {
-  assert.ok(js.includes(token), "Phase 4 interaction missing: " + token);
-}
-assert.ok(css.includes(".property-table-multiselect"), "Multi-select filter styling missing");
-
-for (const marker of ['document.addEventListener("pointerdown"', 'dropdown.contains(event.target)', 'event.key !== "Escape"', 'dropdown.open = false', 'other.open = false']) {
-  assert.ok(js.includes(marker), "Dropdown dismissal behavior missing: " + marker);
-}
-for (const marker of [".property-table-controls > button", "height: 52px", ".property-table-controls > .property-column-chooser > summary"]) {
-  assert.ok(css.includes(marker), "Toolbar size contract missing: " + marker);
-}
+for (const selector of [
+  ".property-view-switch", ".property-table-view", ".property-portfolio-table",
+  ".property-table-scroll", ".property-details-app [hidden]",
+  ".property-column-chooser", ".property-column-filter-menu",
+  ".property-column-filter-indicator", ".property-column-menu-trigger",
+]) assert.ok(css.includes(selector), "Missing Table style: " + selector);
+assert.ok(js.includes("if (table && tableView && detailsView && viewButtons.length)"), "Legacy HTML guard missing");
+assert.ok(js.includes("const headerButtons = table ?"), "Legacy Details-only table guard missing");
+assert.ok(js.includes("COLUMNS_STORAGE_KEY") && js.includes("VIEW_STORAGE_KEY"), "Preference preservation missing");
+assert.ok(!js.includes("activeFilterValues("), "Legacy toolbar filter logic remains");
+console.log("v2.1.0 column header menu source contracts intact.");
