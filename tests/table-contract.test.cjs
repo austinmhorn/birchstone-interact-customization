@@ -7,7 +7,7 @@ for (const marker of [
   "data-property-table-view", "data-property-details-view",
   "data-property-view-button", "data-property-table-open",
   "data-property-table-search", "data-property-table-state",
-  "data-property-table-market", "data-property-table-reset",
+  "data-property-table-manager", "data-property-table-reset",
   "data-property-table-sort", "data-property-table-count",
   "params.set(\"view\", activeView)", "propertyFromHash()",
 ]) assert.ok(js.includes(marker), "Missing Table interaction: " + marker);
@@ -23,3 +23,8 @@ for (const token of [".property-column-chooser", ".property-column-chooser__menu
   assert.ok(css.includes(token), "Phase 3 style missing: " + token);
 }
 console.log("Phase 3 column chooser and preference contracts intact.");
+
+for (const token of ["data-property-filter-options", "selectedStates", "selectedManagers", "data-property-columns-all", "data-property-table-export", "URL.createObjectURL", "text/csv"]) {
+  assert.ok(js.includes(token), "Phase 4 interaction missing: " + token);
+}
+assert.ok(css.includes(".property-table-multiselect"), "Multi-select filter styling missing");
