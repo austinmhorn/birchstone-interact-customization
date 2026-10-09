@@ -15,3 +15,11 @@ for (const selector of [".property-view-switch", ".property-table-view", ".prope
   assert.ok(css.includes(selector), "Missing Table style: " + selector);
 assert.ok(js.includes("if (table && tableView && detailsView && viewButtons.length)"), "Table must be feature detected for legacy HTML");
 console.log("Dual-view source contracts intact.");
+
+for (const token of ["COLUMNS_STORAGE_KEY", "VIEW_STORAGE_KEY", "applyColumns", "data-property-column-checkbox", "data-property-columns-reset", "defaultChecked", "requestedView"]) {
+  assert.ok(js.includes(token), "Phase 3 behavior missing: " + token);
+}
+for (const token of [".property-column-chooser", ".property-column-chooser__menu"]) {
+  assert.ok(css.includes(token), "Phase 3 style missing: " + token);
+}
+console.log("Phase 3 column chooser and preference contracts intact.");
