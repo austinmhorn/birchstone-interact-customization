@@ -435,7 +435,9 @@
         else if (columnChooser?.open) { columnChooser.open = false; columnChooser.querySelector("summary")?.focus(); }
       });
       window.addEventListener("resize", positionColumnMenu);
-      window.addEventListener("scroll", () => { if (!menu.hidden) closeColumnMenu(); }, true);
+      window.addEventListener("scroll", event => {
+        if (!menu.hidden && !menu.contains(event.target)) closeColumnMenu();
+      }, true);
       headerButtons.forEach(button => button.addEventListener("click", () => {
         if (columnChooser) columnChooser.open = false;
         openColumnMenu(button);
