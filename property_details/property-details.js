@@ -179,9 +179,111 @@
       showProperty(selector.value);
     });
 
+    // Feature-detect Table markup: the currently published Details-only HTML
+    // must continue to work when this script is deployed first.
+    const tableView = app.querySelector("[data-property-table-view]");
+    const detailsView = app.querySelector("[data-property-details-view]");
+    const viewButtons = [...app.querySelectorAll("[data-property-view-button]")];
+    const table = app.querySelector("[data-property-table]");
+    const rows = table ? [...table.tBodies[0].rows] : [];
+    const search = app.querySelector("[data-property-table-search]");
+    const state = app.querySelector("[data-property-table-state]");
+    const market = app.querySelector("[data-property-table-market]");
+    let activeView = "details";
+    let sortIndex = -1;
+    let sortDirection = 1;
+
+    const switchView = (next, options = {}) => {
+      if (!tableView || !detailsView || !table || !viewButtons.length) return;
+      activeView = next === "table" ? "table" : "details";
+      tableView.hidden = activeView !== "table";
+      detailsView.hidden = activeView !== "details";
+      app.dataset.propertyView = activeView;
+      viewButtons.forEach(button => {
+        const selected = button.dataset.propertyViewButton === activeView;
+        button.setAttribute("aria-pressed", String(selected));
+      });
+      if (options.updateHash !== false && history.replaceState) {
+        const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        params.set("view", activeView);
+        history.replaceState(null, "", "#" + params.toString());
+      }
+    };
+
+    const populateFilter = (element, attribute) => {
+      if (!element) return;
+      const values = [...new Set(rows.map(row => row.getAttribute(attribute) || "").filter(Boolean))];
+      values.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+      values.forEach(value => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        element.appendChild(option);
+      });
+    };
+
+    const applyTableFilters = () => {
+      if (!table || !search) return;
+      const query = search.value.trim().toLocaleLowerCase();
+      const selectedState = state?.value || "";
+      const selectedMarket = market?.value || "";
+      let count = 0;
+      rows.forEach(row => {
+        const matches = (!query || row.textContent.toLocaleLowerCase().includes(query)) &&
+          (!selectedState || row.dataset.propertyTableState === selectedState) &&
+          (!selectedMarket || row.dataset.propertyTableMarket === selectedMarket);
+        row.hidden = !matches;
+        if (matches) count++;
+      });
+      const counter = app.querySelector("[data-property-table-count]");
+      const empty = app.querySelector("[data-property-table-empty]");
+      if (counter) counter.textContent = count + " of " + rows.length + " properties";
+      if (empty) empty.hidden = count !== 0;
+    };
+
+    if (table && tableView && detailsView && viewButtons.length) {
+      populateFilter(state, "data-property-table-state");
+      populateFilter(market, "data-property-table-market");
+      [search, state, market].forEach(control => control?.addEventListener("input", applyTableFilters));
+      app.querySelector("[data-property-table-reset]")?.addEventListener("click", () => {
+        if (search) search.value = "";
+        if (state) state.value = "";
+        if (market) market.value = "";
+        applyTableFilters();
+      });
+      viewButtons.forEach(button => button.addEventListener("click", () => {
+        switchView(button.dataset.propertyViewButton);
+      }));
+      app.querySelectorAll("[data-property-table-open]").forEach(button => {
+        button.addEventListener("click", () => {
+          showProperty(button.dataset.propertyTableOpen);
+          switchView("details");
+        });
+      });
+      table.querySelectorAll("[data-property-table-sort]").forEach(button => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.propertyTableSort);
+          if (sortIndex === index) sortDirection *= -1;
+          else { sortIndex = index; sortDirection = 1; }
+          const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+          rows.sort((a, b) => collator.compare(a.cells[index].textContent.trim(), b.cells[index].textContent.trim()) * sortDirection);
+          rows.forEach(row => table.tBodies[0].appendChild(row));
+          table.querySelectorAll("[data-property-table-sort]").forEach(item => item.removeAttribute("aria-sort"));
+          button.closest("th").setAttribute("aria-sort", sortDirection === 1 ? "ascending" : "descending");
+        });
+      });
+      applyTableFilters();
+      const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      switchView(params.get("view") === "table" ? "table" : "details", { updateHash: false });
+    }
+
     window.addEventListener("hashchange", () => {
       const key = propertyFromHash();
       if (key) showProperty(key, { updateHash: false });
+      if (table) {
+        const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        switchView(params.get("view") === "table" ? "table" : "details", { updateHash: false });
+      }
     });
   }
 
