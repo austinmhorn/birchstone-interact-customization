@@ -330,10 +330,10 @@
             const link = cell.querySelector('a[href^="http"]');
             const value = link ? link.href : cell.textContent.trim();
             // Guard against spreadsheet formula execution when opened in Excel.
-            return quote(/^[\\s]*[=+@-]/.test(value) ? "'" + value : value);
+            return quote(/^\s*[=+@-]/.test(value) ? "'" + value : value);
           }).join(",")),
         ];
-        const blob = new Blob(["\\uFEFF" + lines.join("\\r\\n")], { type: "text/csv;charset=utf-8" });
+        const blob = new Blob(["\uFEFF" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
         const url = URL.createObjectURL(blob);
         const download = document.createElement("a");
         download.href = url;
