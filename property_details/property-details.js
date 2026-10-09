@@ -268,7 +268,7 @@
           const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
           rows.sort((a, b) => collator.compare(a.cells[index].textContent.trim(), b.cells[index].textContent.trim()) * sortDirection);
           rows.forEach(row => table.tBodies[0].appendChild(row));
-          table.querySelectorAll("[data-property-table-sort]").forEach(item => item.removeAttribute("aria-sort"));
+          table.querySelectorAll("th[aria-sort]").forEach(item => item.removeAttribute("aria-sort"));
           button.closest("th").setAttribute("aria-sort", sortDirection === 1 ? "ascending" : "descending");
         });
       });
