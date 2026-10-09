@@ -1,5 +1,7 @@
 (() => {
   const STORAGE_KEY = "birchstone-property-details-selection";
+  const VIEW_STORAGE_KEY = "birchstone-property-details-view-v1";
+  const COLUMNS_STORAGE_KEY = "birchstone-property-table-columns-v1";
 
 
   function closePageDetailsPane() {
@@ -179,9 +181,156 @@
       showProperty(selector.value);
     });
 
+    // Feature-detect Table markup: the currently published Details-only HTML
+    // must continue to work when this script is deployed first.
+    const tableView = app.querySelector("[data-property-table-view]");
+    const detailsView = app.querySelector("[data-property-details-view]");
+    const viewButtons = [...app.querySelectorAll("[data-property-view-button]")];
+    const table = app.querySelector("[data-property-table]");
+    const rows = table ? [...table.tBodies[0].rows] : [];
+    const search = app.querySelector("[data-property-table-search]");
+    const state = app.querySelector("[data-property-table-state]");
+    const market = app.querySelector("[data-property-table-market]");
+    let activeView = "details";
+    let sortIndex = -1;
+    let sortDirection = 1;
+    const safeRead = key => {
+      try { return localStorage.getItem(key); } catch (_) { return null; }
+    };
+    const safeWrite = (key, value) => {
+      try { localStorage.setItem(key, value); } catch (_) {}
+    };
+    const columns = [...app.querySelectorAll("[data-property-column-checkbox]")];
+    const applyColumns = (saved = null) => {
+      if (!table || !columns.length) return [];
+      const permitted = new Set(columns.map(item => item.dataset.propertyColumnKey));
+      const selected = Array.isArray(saved)
+        ? new Set(saved.filter(key => permitted.has(key)))
+        : new Set(columns.filter(item => item.defaultChecked).map(item => item.dataset.propertyColumnKey));
+      selected.add("Property Name");
+      columns.forEach(item => {
+        const enabled = selected.has(item.dataset.propertyColumnKey);
+        item.checked = enabled;
+        const index = Number(item.dataset.propertyColumnCheckbox);
+        if (table.tHead.rows[0].cells[index]) table.tHead.rows[0].cells[index].hidden = !enabled;
+        rows.forEach(row => { if (row.cells[index]) row.cells[index].hidden = !enabled; });
+      });
+      return [...selected];
+    };
+    let parsedColumns = null;
+    const savedColumns = safeRead(COLUMNS_STORAGE_KEY);
+    if (savedColumns) {
+      try {
+        const parsed = JSON.parse(savedColumns);
+        if (Array.isArray(parsed)) parsedColumns = parsed.filter(item => typeof item === "string");
+      } catch (_) {}
+    }
+
+    const switchView = (next, options = {}) => {
+      if (!tableView || !detailsView || !table || !viewButtons.length) return;
+      activeView = next === "table" ? "table" : "details";
+      tableView.hidden = activeView !== "table";
+      detailsView.hidden = activeView !== "details";
+      app.dataset.propertyView = activeView;
+      if (options.remember !== false) safeWrite(VIEW_STORAGE_KEY, activeView);
+      viewButtons.forEach(button => {
+        const selected = button.dataset.propertyViewButton === activeView;
+        button.setAttribute("aria-pressed", String(selected));
+      });
+      if (options.updateHash !== false && history.replaceState) {
+        const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        params.set("view", activeView);
+        history.replaceState(null, "", "#" + params.toString());
+      }
+    };
+
+    const populateFilter = (element, attribute) => {
+      if (!element) return;
+      const values = [...new Set(rows.map(row => row.getAttribute(attribute) || "").filter(Boolean))];
+      values.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+      values.forEach(value => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        element.appendChild(option);
+      });
+    };
+
+    const applyTableFilters = () => {
+      if (!table || !search) return;
+      const query = search.value.trim().toLocaleLowerCase();
+      const selectedState = state?.value || "";
+      const selectedMarket = market?.value || "";
+      let count = 0;
+      rows.forEach(row => {
+        const matches = (!query || row.textContent.toLocaleLowerCase().includes(query)) &&
+          (!selectedState || row.dataset.propertyTableState === selectedState) &&
+          (!selectedMarket || row.dataset.propertyTableMarket === selectedMarket);
+        row.hidden = !matches;
+        if (matches) count++;
+      });
+      const counter = app.querySelector("[data-property-table-count]");
+      const empty = app.querySelector("[data-property-table-empty]");
+      if (counter) counter.textContent = count + " of " + rows.length + " properties";
+      if (empty) empty.hidden = count !== 0;
+    };
+
+    if (table && tableView && detailsView && viewButtons.length) {
+      applyColumns(parsedColumns);
+      columns.forEach(item => item.addEventListener("change", () => {
+        const enabled = applyColumns(columns.filter(input => input.checked).map(input => input.dataset.propertyColumnKey));
+        safeWrite(COLUMNS_STORAGE_KEY, JSON.stringify(enabled));
+      }));
+      app.querySelector("[data-property-columns-reset]")?.addEventListener("click", () => {
+        const defaults = applyColumns();
+        safeWrite(COLUMNS_STORAGE_KEY, JSON.stringify(defaults));
+      });
+      populateFilter(state, "data-property-table-state");
+      populateFilter(market, "data-property-table-market");
+      [search, state, market].forEach(control => control?.addEventListener("input", applyTableFilters));
+      app.querySelector("[data-property-table-reset]")?.addEventListener("click", () => {
+        if (search) search.value = "";
+        if (state) state.value = "";
+        if (market) market.value = "";
+        applyTableFilters();
+      });
+      viewButtons.forEach(button => button.addEventListener("click", () => {
+        switchView(button.dataset.propertyViewButton);
+      }));
+      app.querySelectorAll("[data-property-table-open]").forEach(button => {
+        button.addEventListener("click", () => {
+          showProperty(button.dataset.propertyTableOpen);
+          switchView("details");
+        });
+      });
+      table.querySelectorAll("[data-property-table-sort]").forEach(button => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.propertyTableSort);
+          if (sortIndex === index) sortDirection *= -1;
+          else { sortIndex = index; sortDirection = 1; }
+          const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+          rows.sort((a, b) => collator.compare(a.cells[index].textContent.trim(), b.cells[index].textContent.trim()) * sortDirection);
+          rows.forEach(row => table.tBodies[0].appendChild(row));
+          table.querySelectorAll("th[aria-sort]").forEach(item => item.removeAttribute("aria-sort"));
+          button.closest("th").setAttribute("aria-sort", sortDirection === 1 ? "ascending" : "descending");
+        });
+      });
+      applyTableFilters();
+      const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const requestedView = params.get("view");
+      const initialView = requestedView === "table" || requestedView === "details"
+        ? requestedView
+        : safeRead(VIEW_STORAGE_KEY) === "table" ? "table" : "details";
+      switchView(initialView, { updateHash: false, remember: false });
+    }
+
     window.addEventListener("hashchange", () => {
       const key = propertyFromHash();
       if (key) showProperty(key, { updateHash: false });
+      if (table) {
+        const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        switchView(params.get("view") === "table" ? "table" : "details", { updateHash: false });
+      }
     });
   }
 
