@@ -32,3 +32,6 @@ console.log("v2.1.0 column header menu source contracts intact.");
 for (const retired of ['populateFilter(', 'activeFilterValues(', 'filterMenus[', 'data-property-table-sort']) {
   assert.ok(!js.includes(retired), "Old filter initialization remains: " + retired);
 }
+
+assert.ok(css.includes(".property-column-filter-indicator { display: none !important; }"), "Extra filter dot must stay hidden");
+assert.ok(css.includes(".property-column-menu-trigger.is-filtered"), "Filtered chevron styling missing");
