@@ -189,8 +189,19 @@
     const table = app.querySelector("[data-property-table]");
     const rows = table ? [...table.tBodies[0].rows] : [];
     const search = app.querySelector("[data-property-table-search]");
-    const state = app.querySelector("[data-property-table-state]");
-    const market = app.querySelector("[data-property-table-market]");
+    const filterMenus = {
+      state: app.querySelector('[data-property-filter-options="state"]'),
+      manager: app.querySelector('[data-property-filter-options="manager"]'),
+    };
+    const activeFilterValues = name => new Set(
+      [...(filterMenus[name]?.querySelectorAll("input:checked") || [])].map(input => input.value)
+    );
+    const updateFilterSummary = name => {
+      const summary = app.querySelector('[data-property-filter-summary="' + name + '"]');
+      if (!summary) return;
+      const selected = activeFilterValues(name);
+      summary.textContent = selected.size ? selected.size + " selected" : (name === "state" ? "All states" : "All managers");
+    };
     let activeView = "details";
     let sortIndex = -1;
     let sortDirection = 1;
@@ -244,28 +255,36 @@
       }
     };
 
-    const populateFilter = (element, attribute) => {
-      if (!element) return;
-      const values = [...new Set(rows.map(row => row.getAttribute(attribute) || "").filter(Boolean))];
-      values.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+    const populateFilter = (name, attribute) => {
+      const menu = filterMenus[name];
+      if (!menu) return;
+      const values = [...new Set(rows.map(row => row.getAttribute(attribute) || "").filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
       values.forEach(value => {
-        const option = document.createElement("option");
-        option.value = value;
-        option.textContent = value;
-        element.appendChild(option);
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.value = value;
+        input.addEventListener("change", () => {
+          updateFilterSummary(name);
+          applyTableFilters();
+        });
+        label.append(input, document.createTextNode(value));
+        menu.appendChild(label);
       });
+      updateFilterSummary(name);
     };
 
     const applyTableFilters = () => {
       if (!table || !search) return;
       const query = search.value.trim().toLocaleLowerCase();
-      const selectedState = state?.value || "";
-      const selectedMarket = market?.value || "";
+      const selectedStates = activeFilterValues("state");
+      const selectedManagers = activeFilterValues("manager");
       let count = 0;
       rows.forEach(row => {
         const matches = (!query || row.textContent.toLocaleLowerCase().includes(query)) &&
-          (!selectedState || row.dataset.propertyTableState === selectedState) &&
-          (!selectedMarket || row.dataset.propertyTableMarket === selectedMarket);
+          (!selectedStates.size || selectedStates.has(row.dataset.propertyTableState)) &&
+          (!selectedManagers.size || selectedManagers.has(row.dataset.propertyTableManager));
         row.hidden = !matches;
         if (matches) count++;
       });
@@ -281,18 +300,48 @@
         const enabled = applyColumns(columns.filter(input => input.checked).map(input => input.dataset.propertyColumnKey));
         safeWrite(COLUMNS_STORAGE_KEY, JSON.stringify(enabled));
       }));
+      app.querySelector("[data-property-columns-all]")?.addEventListener("click", () => {
+        const all = applyColumns(columns.map(input => input.dataset.propertyColumnKey));
+        safeWrite(COLUMNS_STORAGE_KEY, JSON.stringify(all));
+      });
       app.querySelector("[data-property-columns-reset]")?.addEventListener("click", () => {
         const defaults = applyColumns();
         safeWrite(COLUMNS_STORAGE_KEY, JSON.stringify(defaults));
       });
-      populateFilter(state, "data-property-table-state");
-      populateFilter(market, "data-property-table-market");
-      [search, state, market].forEach(control => control?.addEventListener("input", applyTableFilters));
+      populateFilter("state", "data-property-table-state");
+      populateFilter("manager", "data-property-table-manager");
+      search?.addEventListener("input", applyTableFilters);
       app.querySelector("[data-property-table-reset]")?.addEventListener("click", () => {
         if (search) search.value = "";
-        if (state) state.value = "";
-        if (market) market.value = "";
+        Object.keys(filterMenus).forEach(name => {
+          filterMenus[name]?.querySelectorAll("input").forEach(input => { input.checked = false; });
+          updateFilterSummary(name);
+        });
         applyTableFilters();
+      });
+      app.querySelector("[data-property-table-export]")?.addEventListener("click", () => {
+        const indexes = columns.filter(input => input.checked)
+          .map(input => Number(input.dataset.propertyColumnCheckbox));
+        const quote = value => '"' + String(value ?? "").replace(/"/g, '""') + '"';
+        const lines = [
+          indexes.map(index => quote(table.tHead.rows[0].cells[index].querySelector("button")?.childNodes[0]?.textContent.trim() || "")).join(","),
+          ...rows.filter(row => !row.hidden).map(row => indexes.map(index => {
+            const cell = row.cells[index];
+            const link = cell.querySelector('a[href^="http"]');
+            const value = link ? link.href : cell.textContent.trim();
+            // Guard against spreadsheet formula execution when opened in Excel.
+            return quote(/^[\\s]*[=+@-]/.test(value) ? "'" + value : value);
+          }).join(",")),
+        ];
+        const blob = new Blob(["\\uFEFF" + lines.join("\\r\\n")], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const download = document.createElement("a");
+        download.href = url;
+        download.download = "birchstone-property-portfolio.csv";
+        document.body.appendChild(download);
+        download.click();
+        download.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       });
       viewButtons.forEach(button => button.addEventListener("click", () => {
         switchView(button.dataset.propertyViewButton);
