@@ -250,7 +250,7 @@
       return value === "—" ? "" : value;
     };
     const filterLabel = value => value || "(Blanks)";
-    const headerButtons = [...table.querySelectorAll("[data-property-table-menu]")];
+    const headerButtons = table ? [...table.querySelectorAll("[data-property-table-menu]")] : [];
     let activeMenu = null;
     let activeTrigger = null;
     const menu = document.createElement("div");
