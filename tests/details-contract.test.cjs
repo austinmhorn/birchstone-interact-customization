@@ -30,4 +30,13 @@ for (const selector of [
 ]) {
   assert.ok(css.includes(selector), `Existing Details CSS contract missing: ${selector}`);
 }
+for (const contract of [
+  /data-property-column-search/,
+  /columnSearch\?\.addEventListener\("input", filterColumnOptions\)/,
+  /option\.hidden = !option\.textContent\.toLocaleLowerCase\(\)\.includes\(query\)/,
+]) {
+  assert.match(source, contract, `Column search JS contract missing: ${contract}`);
+}
+assert.match(css, /\.property-column-chooser__option\[hidden\]/, "Column search must hide nonmatching options");
+
 console.log("Details presentation and navigation baseline contracts intact.");

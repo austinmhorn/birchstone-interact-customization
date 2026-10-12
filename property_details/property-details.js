@@ -421,6 +421,16 @@
 
     if (table && tableView && detailsView && viewButtons.length) {
       const columnChooser = app.querySelector("[data-property-column-chooser]");
+      const columnSearch = columnChooser?.querySelector("[data-property-column-search]");
+      const filterColumnOptions = () => {
+        const query = (columnSearch?.value || "").trim().toLocaleLowerCase();
+        columns.forEach(input => {
+          const option = input.closest(".property-column-chooser__option");
+          if (option) option.hidden = !option.textContent.toLocaleLowerCase().includes(query);
+        });
+      };
+      columnSearch?.addEventListener("input", filterColumnOptions);
+
       columnChooser?.addEventListener("toggle", () => {
         if (columnChooser.open) closeColumnMenu();
       });

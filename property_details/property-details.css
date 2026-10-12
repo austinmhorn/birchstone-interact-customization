@@ -320,6 +320,11 @@
 .property-column-chooser :focus-visible { outline: 3px solid #72a9a4; outline-offset: 2px; }
 
 
+/* Column-name search filters options only; it never changes selections. */
+.property-column-chooser__menu .property-column-chooser__search-label { display: block; min-height: 0; padding: 0; margin: 0 0 5px; font-size: .75rem; font-weight: 700; cursor: default; }
+.property-column-chooser__menu .property-column-chooser__search { display: block; box-sizing: border-box; width: 100%; height: 36px; padding: 7px 10px; margin: 0 0 8px; border: 1px solid var(--pd-border-strong); border-radius: 8px; background: var(--pd-surface); color: var(--pd-text); font: inherit; font-size: .83rem; accent-color: auto; }
+.property-column-chooser__menu .property-column-chooser__option[hidden] { display: none; }
+
 /* Prevent dropdown clipping by the table shell; only the table body scrolls. */
 .property-table-view { overflow: visible; }
 .property-details-app[data-property-view="table"] .property-details-selector-wrap { display: none; }
