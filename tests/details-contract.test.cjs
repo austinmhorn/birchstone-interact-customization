@@ -39,4 +39,9 @@ for (const contract of [
 }
 assert.match(css, /\.property-column-chooser__option\[hidden\]/, "Column search must hide nonmatching options");
 
+
+// Width expansion is intentionally bounded by the viewport's right gutter.
+assert.match(source, /const target = Math\.min\(1440, available\);/, "Desktop width must allow up to 1440px");
+assert.match(source, /window\.innerWidth - rect\.left - rightGutter/, "Width must respect available viewport space");
+
 console.log("Details presentation and navigation baseline contracts intact.");
