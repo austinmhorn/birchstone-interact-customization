@@ -40,8 +40,13 @@ for (const contract of [
 assert.match(css, /\.property-column-chooser__option\[hidden\]/, "Column search must hide nonmatching options");
 
 
-// Width expansion is intentionally bounded by the viewport's right gutter.
-assert.match(source, /const target = Math\.min\(1440, available\);/, "Desktop width must allow up to 1440px");
-assert.match(source, /window\.innerWidth - rect\.left - rightGutter/, "Width must respect available viewport space");
+// The centered layout must use the Interact document as its anchor while
+// bounding the expanded app to the viewport and avoiding resize drift.
+assert.match(source, /document\.getElementById\("document"\)/, "Interact document must anchor centering");
+assert.match(source, /app\.style\.setProperty\("margin-left", "0px", "important"\)/, "Recompute from unshifted position");
+assert.match(source, /const target = Math\.min\(1440,/, "Desktop width must remain capped at 1440px");
+assert.match(source, /bounds\.left \+ \(bounds\.width - target\) \/ 2/, "Center on Interact document");
+assert.match(source, /window\.innerWidth - gutter - target/, "Respect right viewport gutter");
+assert.match(source, /centeredLeft - naturalLeft \+ "px"/, "Apply centered left margin");
 
 console.log("Details presentation and navigation baseline contracts intact.");

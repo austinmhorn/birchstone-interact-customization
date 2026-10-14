@@ -73,16 +73,24 @@
     const applyWidth = () => {
       relaxAncestorClipping();
 
-      const rect = app.getBoundingClientRect();
-      const rightGutter = 32;
-      const available = Math.max(
-        rect.width,
-        window.innerWidth - rect.left - rightGutter
+      // Measure the unshifted app on every resize, avoiding accumulated
+      // margin offsets after Interact changes its document layout.
+      app.style.setProperty("margin-left", "0px", "important");
+      const naturalLeft = app.getBoundingClientRect().left;
+      const documentContainer = document.getElementById("document");
+      const anchor = documentContainer || app.parentElement;
+      const bounds = anchor.getBoundingClientRect();
+      const gutter = 32;
+      const target = Math.min(1440, Math.max(0, window.innerWidth - 2 * gutter));
+      const idealLeft = bounds.left + (bounds.width - target) / 2;
+      const centeredLeft = Math.max(
+        gutter,
+        Math.min(idealLeft, window.innerWidth - gutter - target)
       );
-      const target = Math.min(1440, available);
 
       app.style.setProperty("width", target + "px", "important");
       app.style.setProperty("max-width", "none", "important");
+      app.style.setProperty("margin-left", centeredLeft - naturalLeft + "px", "important");
     };
 
     applyWidth();
