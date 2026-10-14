@@ -91,6 +91,12 @@
   text-decoration: none;
 }
 .property-details-selector-wrap { display: grid; gap: 8px; }
+.property-details-selector-wrap .property-details-correction-link {
+  justify-self: end;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
 .property-details-selector-wrap label {
   color: var(--pd-muted);
   font-size: .78rem;
