@@ -690,3 +690,18 @@
 .property-column-filter-menu {
   font-family: 'Montserrat', Arial, sans-serif;
 }
+
+/* Ensure the same headings win over Interact's site-wide typography.
+   The standalone Portal preview and Interact use this shared stylesheet. */
+.property-details-app .property-details-toolbar h1 {
+  font-family: 'Montserrat', Arial, sans-serif !important;
+  font-weight: 800 !important;
+}
+.property-details-app .property-record__hero h2 {
+  font-family: 'Montserrat', Arial, sans-serif !important;
+  font-weight: 700 !important;
+}
+.property-details-app .property-section h3 {
+  font-family: 'Montserrat', Arial, sans-serif !important;
+  font-weight: 700 !important;
+}
