@@ -79,7 +79,7 @@
         rect.width,
         window.innerWidth - rect.left - rightGutter
       );
-      const target = Math.min(1180, available);
+      const target = Math.min(1440, available);
 
       app.style.setProperty("width", target + "px", "important");
       app.style.setProperty("max-width", "none", "important");
