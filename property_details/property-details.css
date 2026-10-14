@@ -60,11 +60,33 @@
   font-size: clamp(1.7rem, 3vw, 2.4rem);
   line-height: 1.05;
 }
-.property-details-toolbar__intro > p:last-child {
+.property-details-toolbar__intro > p:last-of-type {
   max-width: 760px;
   margin: 10px 0 0;
   color: var(--pd-muted);
   line-height: 1.55;
+}
+.property-details-correction-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-top: 16px;
+  padding: 10px 15px;
+  border: 1px solid var(--pd-accent);
+  border-radius: 10px;
+  background: var(--pd-accent-soft);
+  color: var(--pd-accent-strong);
+  font-size: .875rem;
+  font-weight: 750;
+  text-decoration: none;
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+.property-details-correction-link:hover,
+.property-details-correction-link:focus-visible {
+  background: #d8eae8;
+  box-shadow: 0 0 0 3px rgba(31,95,91,.12);
+  text-decoration: none;
 }
 .property-details-selector-wrap { display: grid; gap: 8px; }
 .property-details-selector-wrap label {
