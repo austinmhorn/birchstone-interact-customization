@@ -49,4 +49,9 @@ assert.match(source, /bounds\.left \+ \(bounds\.width - target\) \/ 2/, "Center 
 assert.match(source, /window\.innerWidth - gutter - target/, "Respect right viewport gutter");
 assert.match(source, /centeredLeft - naturalLeft \+ "px"/, "Apply centered left margin");
 
+// Typography is deterministic in the standalone Portal preview as well as Interact.
+assert.match(css, /^@import url\('https:\/\/fonts\.googleapis\.com\/css2\?family=Montserrat:/, "Montserrat should load in standalone previews");
+assert.match(css, /\.property-details-app :is\(h1, h2, h3, p, label, button/, "Interact heading/control font overrides must be covered");
+assert.doesNotMatch(css, /font-family: 'Neutraface Text'/, "Do not rely on an Interact-only font family");
+
 console.log("Details presentation and navigation baseline contracts intact.");
