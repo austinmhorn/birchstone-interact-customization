@@ -514,3 +514,169 @@
   opacity: .65 !important;
   cursor: default;
 }
+
+
+/* Birchstone brand color pass — presentation-only; no behavioral changes.
+   Scoped to the Property Details app so surrounding Interact UI is untouched. */
+.property-details-app {
+  --pd-bg: #0a1929;
+  --pd-surface: #102c43;
+  --pd-surface-soft: rgba(255,255,255,.05);
+  --pd-text: #fff;
+  --pd-muted: #b6c7d6;
+  --pd-border: rgba(44,177,204,.3);
+  --pd-border-strong: rgba(44,177,204,.4);
+  --pd-accent: #2cb1cc;
+  --pd-accent-strong: #59d0e4;
+  --pd-accent-soft: rgba(44,177,204,.15);
+  --pd-shadow: 0 16px 36px rgba(0,0,0,.18);
+  --pd-radius-lg: 16px;
+  --pd-radius-md: 12px;
+  padding: 24px;
+  border-radius: 20px;
+  background: linear-gradient(135deg,#0a1929 0%,#1a365d 50%,#0a1929 100%);
+  color: var(--pd-text);
+  font-family: 'Neutraface Text','Montserrat',Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+.property-details-toolbar,
+.property-section,
+.property-table-view,
+.property-quick-links {
+  border: 1px solid var(--pd-border);
+  background: linear-gradient(135deg,rgba(0,63,95,.7),rgba(12,41,60,.8));
+  color: var(--pd-text);
+  box-shadow: var(--pd-shadow);
+}
+.property-details-toolbar { backdrop-filter: blur(14px); }
+.property-details-toolbar h1,
+.property-section h3,
+.property-details-toolbar__eyebrow { color: var(--pd-accent); }
+.property-details-toolbar h1 { font-size: clamp(1.7rem, 3vw, 2rem); font-weight: 800; }
+.property-details-toolbar__intro > p:last-of-type { color: rgba(255,255,255,.9); }
+.property-details-selector-wrap label,
+.property-detail dt,
+.property-table-controls label { color: rgba(255,255,255,.72); }
+.property-details-selector,
+.property-table-controls input,
+.property-table-controls select,
+.property-column-chooser__menu .property-column-chooser__search,
+.property-column-filter-menu > input[type="search"] {
+  border: 1px solid var(--pd-border);
+  border-radius: 8px;
+  background: rgba(12,41,60,.4);
+  color: #fff;
+  color-scheme: dark;
+}
+.property-details-selector { min-height: 48px; }
+.property-details-selector:focus,
+.property-table-controls input:focus-visible,
+.property-column-chooser__menu input:focus-visible {
+  border-color: var(--pd-accent);
+  outline: 2px solid rgba(44,177,204,.6);
+  outline-offset: 2px;
+}
+.property-record__hero {
+  border: 1px solid var(--pd-border);
+  background: linear-gradient(135deg,rgba(0,63,95,.7),rgba(12,41,60,.8));
+}
+.property-record__hero h2 { color: #fff; }
+.property-record__address { color: rgba(255,255,255,.9); }
+.property-detail { border-bottom-color: rgba(44,177,204,.17); }
+.property-detail dd { color: #fff; font-weight: 550; }
+.property-detail a,
+.property-portfolio-table a,
+.property-table-open { color: var(--pd-accent-strong); }
+.property-detail a:hover { color: #fff; }
+.property-section h3 { border-bottom-color: var(--pd-border); }
+.property-quick-links a,
+.property-column-chooser > summary,
+.property-column-chooser__menu button,
+.property-table-controls > button,
+.property-column-filter-menu__actions button {
+  border: 1px solid var(--pd-border);
+  border-radius: 8px;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+}
+.property-quick-links a:hover,
+.property-column-chooser > summary:hover,
+.property-table-controls > button:hover,
+.property-table-controls > .property-column-chooser > summary:hover {
+  border-color: var(--pd-accent);
+  background: var(--pd-accent-soft);
+}
+.property-details-correction-link {
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg,#2cb1cc,#0891a0);
+  color: #fff;
+}
+.property-details-correction-link:hover,
+.property-details-correction-link:focus-visible {
+  background: linear-gradient(135deg,#36c4de,#0c9ba9);
+  color: #fff;
+}
+.property-view-switch { background: rgba(255,255,255,.06); }
+.property-view-switch button { color: #b6c7d6; border-radius: 8px; }
+.property-view-switch button[aria-pressed="true"] {
+  background: #2cb1cc;
+  color: #fff;
+}
+.property-table-controls [data-property-table-count] { color: #b6c7d6; }
+.property-column-chooser__menu,
+.property-table-multiselect__menu {
+  border-color: var(--pd-border);
+  background: #102c43;
+  color: #fff;
+}
+.property-column-chooser__menu label { color: #fff; }
+.property-portfolio-table th {
+  border-bottom: 1px solid var(--pd-border);
+  background: #10405b;
+  color: #fff;
+}
+.property-portfolio-table th button,
+.property-portfolio-table th .property-column-menu-trigger {
+  color: #fff;
+}
+.property-portfolio-table td {
+  border-bottom: 1px solid rgba(44,177,204,.18);
+  background: #102c43;
+  color: #fff;
+}
+.property-portfolio-table tbody tr:hover td { background: #17425a; }
+.property-portfolio-table th .property-column-menu-trigger:hover,
+.property-portfolio-table th .property-column-menu-trigger[aria-expanded="true"],
+.property-portfolio-table th .property-column-menu-trigger.is-filtered {
+  border-color: var(--pd-border-strong);
+  background: rgba(44,177,204,.2);
+  color: #fff;
+}
+.property-column-filter-menu {
+  border-color: rgba(44,177,204,.4);
+  background: #102c43;
+  color: #fff;
+  font-family: 'Neutraface Text','Montserrat',Inter,system-ui,sans-serif;
+}
+.property-column-filter-menu__sort { color: #fff; }
+.property-column-filter-menu__sort:hover { background: rgba(44,177,204,.15); }
+.property-column-filter-menu hr { background: rgba(44,177,204,.3); }
+.property-column-filter-menu__actions button { background: rgba(255,255,255,.08); }
+.property-column-filter-menu__apply {
+  background: linear-gradient(135deg,#2cb1cc,#0891a0);
+  color: #fff;
+}
+.property-column-filter-menu__values input,
+.property-column-chooser__menu input[type="checkbox"] { accent-color: #2cb1cc; }
+/* Keep Interact's checkbox reset but recolor its checked/focus state. */
+.property-details-app .property-column-chooser__menu label > input[type="checkbox"]:checked {
+  border-color: #2cb1cc !important;
+  background: #2cb1cc !important;
+}
+.property-details-app .property-column-chooser__menu label > input[type="checkbox"]:focus-visible {
+  outline-color: #2cb1cc !important;
+}
+@media (max-width: 640px) {
+  .property-details-app { padding: 12px; border-radius: 14px; }
+}
