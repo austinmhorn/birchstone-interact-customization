@@ -54,4 +54,17 @@ assert.match(css, /^@import url\('https:\/\/fonts\.googleapis\.com\/css2\?family
 assert.match(css, /\.property-details-app :is\(h1, h2, h3, p, label, button/, "Interact heading/control font overrides must be covered");
 assert.doesNotMatch(css, /font-family: 'Neutraface Text'/, "Do not rely on an Interact-only font family");
 
+// Shared heading typography must override Interact's global NeutraText rules.
+for (const [selector, weight] of [
+  [".property-details-app .property-details-toolbar h1", "800"],
+  [".property-details-app .property-record__hero h2", "700"],
+  [".property-details-app .property-section h3", "700"],
+]) {
+  const start = css.lastIndexOf(selector + " {");
+  assert.ok(start >= 0, `Missing typography parity rule: ${selector}`);
+  const rule = css.slice(start, css.indexOf("}", start));
+  assert.ok(rule.includes("font-family: 'Montserrat', Arial, sans-serif !important;"));
+  assert.ok(rule.includes(`font-weight: ${weight} !important;`));
+}
+
 console.log("Details presentation and navigation baseline contracts intact.");
