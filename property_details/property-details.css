@@ -751,3 +751,9 @@
   .property-details-app .property-fee-group { padding: 12px; }
   .property-details-app .property-fee-item__heading { gap: 8px; flex-wrap: wrap; }
 }
+
+/* v3 noncurrent and unresolved fee states */
+.property-details-app .property-fee-status {
+  color: var(--pd-muted); font-size: .78rem; text-align: right;
+}
+.property-details-app .property-fee-status--unresolved { color: #9a5a16; }
