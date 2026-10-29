@@ -757,3 +757,62 @@
   color: var(--pd-muted); font-size: .78rem; text-align: right;
 }
 .property-details-app .property-fee-status--unresolved { color: #9a5a16; }
+
+
+/* v3.0.1 — compact fee rows and aligned expandable fee details. */
+.property-details-app .property-fee-item__heading { align-items: center; }
+.property-details-app .property-fee-item__name { flex: 1 1 auto; }
+.property-details-app .property-fee-item__heading > strong { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.property-details-app .property-fee-history { margin-top: 6px; }
+.property-details-app .property-fee-history summary {
+  display: inline-flex; align-items: center; min-height: 28px;
+  color: var(--pd-muted); font-size: .73rem;
+}
+.property-details-app .property-fee-history[open] summary { color: var(--pd-accent-strong); }
+.property-details-app .property-fee-history__table-wrap {
+  margin-top: 8px; overflow-x: auto; border: 1px solid var(--pd-border);
+  border-radius: 9px; background: var(--pd-surface);
+}
+.property-details-app .property-fee-history__table {
+  width: 100%; border-collapse: collapse; table-layout: auto;
+  font-size: .75rem; line-height: 1.45; color: var(--pd-text);
+}
+.property-details-app .property-fee-history__table th,
+.property-details-app .property-fee-history__table td {
+  padding: 10px 9px; text-align: left; vertical-align: middle;
+  border-bottom: 1px solid var(--pd-border);
+}
+.property-details-app .property-fee-history__table tbody tr:last-child td { border-bottom: 0; }
+.property-details-app .property-fee-history__table th {
+  color: var(--pd-muted); font-size: .68rem; font-weight: 750;
+  letter-spacing: .03em; white-space: nowrap;
+}
+.property-details-app .property-fee-history__amount { font-weight: 750; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.property-details-app .property-fee-history__period { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.property-details-app .property-fee-history__arrow { margin: 0 7px; color: var(--pd-accent); font-weight: 800; }
+.property-details-app .property-fee-history__ongoing { margin-left: 8px; font-size: .69rem; color: var(--pd-muted); }
+.property-details-app .property-fee-history__status {
+  display: inline-flex; align-items: center; border-radius: 999px;
+  padding: 4px 9px; font-size: .67rem; font-weight: 800;
+  line-height: 1.2; white-space: nowrap;
+  color: #b6e9cd; background: rgba(42, 157, 101, .23);
+}
+.property-details-app .property-fee-history__status--inactive,
+.property-details-app .property-fee-history__status--expired {
+  color: #c3ccd6; background: rgba(153, 170, 186, .2);
+}
+.property-details-app .property-fee-history__status--pending,
+.property-details-app .property-fee-history__status--future {
+  color: #ffe0a3; background: rgba(213, 146, 37, .23);
+}
+.property-details-app .property-fee-history__status--neutral {
+  color: #d7dfe8; background: rgba(153, 170, 186, .18);
+}
+.property-details-app .property-fee-history__single {
+  margin-top: 6px; padding: 10px; border-radius: 8px;
+  border: 1px solid var(--pd-border); background: var(--pd-surface);
+  color: var(--pd-muted); font-size: .75rem;
+}
+@media (max-width: 640px) {
+  .property-details-app .property-fee-history__table { min-width: 420px; }
+}
