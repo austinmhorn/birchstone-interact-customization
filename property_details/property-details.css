@@ -711,3 +711,43 @@
   font-family: 'Montserrat', Arial, sans-serif !important;
   font-weight: 700 !important;
 }
+
+/* v3 related fees: Details-only presentation; no Table selectors changed. */
+.property-details-app .property-fees-section .property-fee-category { margin: 18px 0 24px; }
+.property-details-app .property-fee-category h4 {
+  margin: 0 0 12px; font-size: 1rem; font-weight: 800; color: var(--pd-accent-strong);
+}
+.property-details-app .property-fee-group {
+  padding: 16px; margin: 0 0 14px; border: 1px solid var(--pd-border);
+  border-radius: var(--pd-radius-md); background: var(--pd-surface-soft);
+}
+.property-details-app .property-fee-group h5 {
+  margin: 0 0 12px; font-size: .88rem; font-weight: 750;
+  color: var(--pd-muted); letter-spacing: .025em;
+}
+.property-details-app .property-fee-item {
+  padding: 12px 0; border-top: 1px solid var(--pd-border);
+}
+.property-details-app .property-fee-item__heading {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 16px; line-height: 1.5;
+}
+.property-details-app .property-fee-item__heading span { min-width: 0; overflow-wrap: anywhere; font-weight: 650; }
+.property-details-app .property-fee-item__heading small { color: var(--pd-muted); font-size: .75rem; }
+.property-details-app .property-fee-item__heading strong { flex-shrink: 0; color: var(--pd-accent-strong); }
+.property-details-app .property-fee-item > p { margin: 5px 0 0; color: var(--pd-muted); font-size: .77rem; }
+.property-details-app .property-fee-history { margin-top: 10px; }
+.property-details-app .property-fee-history summary {
+  width: fit-content; color: var(--pd-accent); font-size: .8rem;
+  font-weight: 700; cursor: pointer;
+}
+.property-details-app .property-fee-history summary:focus-visible { outline: 2px solid var(--pd-accent); outline-offset: 3px; }
+.property-details-app .property-fee-history ul {
+  margin: 10px 0 0; padding: 10px 12px 10px 28px;
+  border-radius: 10px; background: var(--pd-surface);
+  color: var(--pd-muted); font-size: .78rem; line-height: 1.75;
+}
+@media (max-width: 640px) {
+  .property-details-app .property-fee-group { padding: 12px; }
+  .property-details-app .property-fee-item__heading { gap: 8px; flex-wrap: wrap; }
+}
