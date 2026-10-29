@@ -816,3 +816,44 @@
 @media (max-width: 640px) {
   .property-details-app .property-fee-history__table { min-width: 420px; }
 }
+
+
+/* v3.0.2 — one compact itemized fee list; category/group remain data only. */
+.property-details-app .property-fees-section .property-fee-category,
+.property-details-app .property-fees-section .property-fee-group {
+  display: contents;
+}
+.property-details-app .property-fees-section {
+  align-content: start;
+}
+.property-details-app .property-fees-section .property-fee-item {
+  margin: 0 0 9px;
+  padding: 11px 13px;
+  border: 1px solid var(--pd-border);
+  border-radius: 9px;
+  background: var(--pd-surface-soft);
+}
+.property-details-app .property-fees-section .property-fee-item__heading {
+  gap: 12px;
+  line-height: 1.35;
+}
+.property-details-app .property-fees-section .property-fee-item__name {
+  font-size: .83rem; font-weight: 700;
+}
+.property-details-app .property-fees-section .property-fee-item__value {
+  max-width: 58%; overflow-wrap: anywhere;
+  text-align: right; font-size: .83rem;
+}
+.property-details-app .property-fees-section .property-fee-history {
+  margin: 3px 0 0; padding: 0;
+}
+.property-details-app .property-fees-section .property-fee-history summary {
+  width: fit-content; min-height: 0; margin: 0; padding: 0;
+  line-height: 1.15; font-size: .69rem;
+}
+.property-details-app .property-fees-section .property-fee-history:not([open]) {
+  margin-bottom: 0;
+}
+.property-details-app .property-fees-section .property-fee-history__table-wrap {
+  margin-top: 9px;
+}
