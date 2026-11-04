@@ -21,6 +21,32 @@
         control.style.setProperty("display", "none", "important");
       }
     }
+
+    // Interact puts the preview message and button in separate child divs.
+    // Find their closest shared container, not the article or toolbar.
+    const previewButton = document.getElementById("body_btnBEPreview");
+    if (previewButton) {
+      const heading = [...document.querySelectorAll("b, strong")].find(
+        element => (element.textContent || "").trim() ===
+          "Would you like an improved page viewing experience?"
+      );
+      if (heading) {
+        let container = previewButton.parentElement;
+        for (let depth = 0; container && depth < 5; depth += 1) {
+          if (container.contains(heading)) {
+            // Never suppress a general page wrapper or the property app.
+            if (container !== document.body &&
+                container !== document.documentElement &&
+                !container.contains(document.querySelector("[data-property-details-app]")) &&
+                container.querySelectorAll("button, a").length <= 2) {
+              container.style.setProperty("display", "none", "important");
+            }
+            break;
+          }
+          container = container.parentElement;
+        }
+      }
+    }
   }
 
   function closePageDetailsPane() {
