@@ -4,6 +4,51 @@
   const COLUMNS_STORAGE_KEY = "birchstone-property-table-columns-v1";
 
 
+  // Only customize Interact document page 2186; leave native controls
+  // untouched on other pages and in the standalone preview.
+  function isPropertyDatabaseDocumentPage() {
+    return /\/Interact\/Pages\/Content\/Document\.aspx$/i.test(window.location.pathname) &&
+      new URLSearchParams(window.location.search).get("id") === "2186";
+  }
+
+  function hideNativeDocumentActions() {
+    if (!isPropertyDatabaseDocumentPage() ||
+        !document.querySelector("[data-property-details-app]")) return;
+
+    for (const id of ["btnPrint", "body_btnPDF"]) {
+      const control = document.getElementById(id);
+      if (control) {
+        control.style.setProperty("display", "none", "important");
+      }
+    }
+
+    // Interact puts the preview message and button in separate child divs.
+    // Find their closest shared container, not the article or toolbar.
+    const previewButton = document.getElementById("body_btnBEPreview");
+    if (previewButton) {
+      const heading = [...document.querySelectorAll("b, strong")].find(
+        element => (element.textContent || "").trim() ===
+          "Would you like an improved page viewing experience?"
+      );
+      if (heading) {
+        let container = previewButton.parentElement;
+        for (let depth = 0; container && depth < 5; depth += 1) {
+          if (container.contains(heading)) {
+            // Never suppress a general page wrapper or the property app.
+            if (container !== document.body &&
+                container !== document.documentElement &&
+                !container.contains(document.querySelector("[data-property-details-app]")) &&
+                container.querySelectorAll("button, a").length <= 2) {
+              container.style.setProperty("display", "none", "important");
+            }
+            break;
+          }
+          container = container.parentElement;
+        }
+      }
+    }
+  }
+
   function closePageDetailsPane() {
     const directCandidates = [
       ...document.querySelectorAll(
@@ -537,6 +582,11 @@
     document
       .querySelectorAll("[data-property-details-app]")
       .forEach(initPropertyDetails);
+    hideNativeDocumentActions();
+    if (isPropertyDatabaseDocumentPage() && document.body) {
+      const observer = new MutationObserver(() => hideNativeDocumentActions());
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
   }
 
   if (document.readyState === "loading") {
