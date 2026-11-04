@@ -4,6 +4,25 @@
   const COLUMNS_STORAGE_KEY = "birchstone-property-table-columns-v1";
 
 
+  // Only customize Interact document page 2186; leave native controls
+  // untouched on other pages and in the standalone preview.
+  function isPropertyDatabaseDocumentPage() {
+    return /\/Interact\/Pages\/Content\/Document\.aspx$/i.test(window.location.pathname) &&
+      new URLSearchParams(window.location.search).get("id") === "2186";
+  }
+
+  function hideNativeDocumentActions() {
+    if (!isPropertyDatabaseDocumentPage() ||
+        !document.querySelector("[data-property-details-app]")) return;
+
+    for (const id of ["btnPrint", "body_btnPDF"]) {
+      const control = document.getElementById(id);
+      if (control) {
+        control.style.setProperty("display", "none", "important");
+      }
+    }
+  }
+
   function closePageDetailsPane() {
     const directCandidates = [
       ...document.querySelectorAll(
@@ -537,6 +556,11 @@
     document
       .querySelectorAll("[data-property-details-app]")
       .forEach(initPropertyDetails);
+    hideNativeDocumentActions();
+    if (isPropertyDatabaseDocumentPage() && document.body) {
+      const observer = new MutationObserver(() => hideNativeDocumentActions());
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
   }
 
   if (document.readyState === "loading") {
