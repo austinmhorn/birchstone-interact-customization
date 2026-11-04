@@ -67,4 +67,11 @@ for (const [selector, weight] of [
   assert.ok(rule.includes(`font-weight: ${weight} !important;`));
 }
 
+// Native Interact actions are hidden only on the published property document.
+for (const marker of [
+  'Document\\.aspx', 'get("id") === "2186"', '"btnPrint"',
+  '"body_btnPDF"', 'hideNativeDocumentActions();',
+]) {
+  assert.ok(source.includes(marker), `Missing page 2186 control guard: ${marker}`);
+}
 console.log("Details presentation and navigation baseline contracts intact.");
