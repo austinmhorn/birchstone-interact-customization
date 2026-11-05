@@ -76,4 +76,12 @@ for (const marker of [
 ]) {
   assert.ok(source.includes(marker), `Missing page 2186 control guard: ${marker}`);
 }
+// Two-line Hold Deposit cards must keep name/history in the left column,
+// with billing method amounts at right; one-line fee layout is untouched.
+const multiAmountCard = ".property-fee-item:has(> .property-fee-item__heading > .property-fee-item__amount-list)";
+assert.ok(css.includes(multiAmountCard), "Multi-amount layout must be scoped to fee cards with an amount list");
+assert.match(css, /grid-template-columns:\s*minmax\(0, 1fr\) auto/, "Multi-amount card needs separate title and amount columns");
+assert.match(css, /\.property-fee-history\s*\{\s*grid-column:\s*1;\s*grid-row:\s*2;/, "Fee history must stay beneath the title");
+assert.match(css, /\.property-fee-item__amount-list\s*\{\s*grid-column:\s*2;\s*grid-row:\s*1 \/ span 2;/, "Amount list must stay in the right column");
+
 console.log("Details presentation and navigation baseline contracts intact.");
