@@ -857,3 +857,44 @@
 .property-details-app .property-fees-section .property-fee-history__table-wrap {
   margin-top: 9px;
 }
+
+
+/* Hold Deposit shows separate charge/refund values by billing method. */
+.property-details-app .property-fee-item__amount-list {
+  display: grid;
+  gap: 5px;
+  flex: 0 1 auto;
+  min-width: min(100%, 225px);
+  max-width: 68%;
+}
+.property-details-app .property-fee-item__amount-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.property-details-app .property-fee-item__amount-row .property-fee-item__billing-method {
+  color: var(--pd-muted);
+  font-size: .73rem;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+.property-details-app .property-fee-item__amount-row .property-fee-item__value {
+  color: var(--pd-accent-strong);
+  flex: 0 0 auto;
+  font-size: .83rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .property-details-app .property-fee-item__amount-list {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .property-details-app .property-fee-item__amount-row {
+    gap: 8px;
+  }
+}
