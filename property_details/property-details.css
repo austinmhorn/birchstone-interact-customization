@@ -898,3 +898,47 @@
     gap: 8px;
   }
 }
+
+
+/* Multi-amount fees: keep the name and its history action in the top-left
+   while the billing-method amounts occupy the right side of the same card.
+   The selector excludes every existing single-amount fee. */
+.property-details-app .property-fees-section .property-fee-item:has(> .property-fee-item__heading > .property-fee-item__amount-list) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: min-content min-content;
+  column-gap: 12px;
+  align-content: start;
+}
+.property-details-app .property-fees-section .property-fee-item:has(> .property-fee-item__heading > .property-fee-item__amount-list) > .property-fee-item__heading {
+  display: contents;
+}
+.property-details-app .property-fees-section .property-fee-item:has(> .property-fee-item__heading > .property-fee-item__amount-list) .property-fee-item__name {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+}
+.property-details-app .property-fees-section .property-fee-item:has(> .property-fee-item__heading > .property-fee-item__amount-list) > .property-fee-history {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  align-self: start;
+}
+.property-details-app .property-fees-section .property-fee-item:has(> .property-fee-item__heading > .property-fee-item__amount-list) .property-fee-item__amount-list {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: start;
+  min-width: min(100%, 225px);
+  max-width: 100%;
+}
+@media (max-width: 560px) {
+  .property-details-app .property-fees-section .property-fee-item:has(> .property-fee-item__heading > .property-fee-item__amount-list) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 8px;
+  }
+  .property-details-app .property-fees-section .property-fee-item:has(> .property-fee-item__heading > .property-fee-item__amount-list) .property-fee-item__amount-list {
+    grid-column: 1;
+    grid-row: 3;
+    width: 100%;
+  }
+}
